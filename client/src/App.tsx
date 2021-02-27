@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -16,15 +16,24 @@ let socket;
 
 function App() {
 
+  const [allUsersNumber, setAllUsersNumber] = useState(0);
+
   const ENDPOINT = "http://localhost:3001";
 
   useEffect(() => {
     socket = io(ENDPOINT);
-    socket.emit("connected", "tempUsernameVar");
-    console.log("socketio test");
+    socket.emit("connected", "connect");
     // effect
+
+    socket.on("updatePublicPlayers", (allUsers) => {
+      console.log(allUsers);
+      setAllUsersNumber(allUsers);
+    })
+
     return () => {
-      //return
+      socket.emit("disconnected", "disconnected");
+      socket.disconnect();
+      socket.off();
     }
   }, [ENDPOINT])
 
@@ -42,7 +51,8 @@ function App() {
             </li>
              <li>
               <Link to="/room">Room</Link>
-            </li> 
+            </li>
+            {allUsersNumber ? <div className="usersOnline">People Online: {allUsersNumber}</div> : ""}
           </ul>
         </nav>
         </div>

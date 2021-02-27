@@ -17,8 +17,20 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>");
 });
 
+let allUsers = 0;
+let usersList = [];
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  // console.log(socket.id);
+  socket.on("connected", (data) => {
+    allUsers++;
+    console.log(data);
+    socket.broadcast.emit("updatePublicPlayers", allUsers);
+  });
+  socket.on("disconnected", (data) => {
+    allUsers--;
+    console.log(data);
+    socket.broadcast.emit("updatePublicPlayers", allUsers);
+  });
 });
 
 http.listen(process.env.PORT, () => {

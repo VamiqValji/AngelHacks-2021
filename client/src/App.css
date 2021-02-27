@@ -66,3 +66,13 @@ a:hover {
   margin-top: 1rem;
   color: black;
 }
+
+.usersOnline {
+  position: absolute;
+  display: flex;
+  align-self: center;
+  right: 2rem;
+  padding: 0.7rem;
+  border-radius: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+}
