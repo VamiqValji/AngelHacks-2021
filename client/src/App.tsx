@@ -1,13 +1,47 @@
 import React from 'react';
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Join from "./pages/Join";
+import Room from "./pages/Room";
+import CreateRoom from "./pages/CreateRoom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <div>Hello World!</div>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/create">Create</Link>
+            </li>
+            <li>
+              <Link to="/room">Room</Link>
+            </li>
+          </ul>
+        </nav>
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route exact path="/">
+            <Join />
+          </Route>
+          <Route exact path="/create">
+            <CreateRoom />
+          </Route>
+          <Route exact path="/room">
+            <Room />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
