@@ -23,9 +23,9 @@ function App() {
             <li>
               <Link to="/create">Create</Link>
             </li>
-            {/* <li>
+            <li>
               <Link to="/room">Room</Link>
-            </li> */}
+            </li>
           </ul>
         </nav>
         </div>
