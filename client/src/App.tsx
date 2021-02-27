@@ -9,21 +9,24 @@ import {
 import Join from "./pages/Join";
 import Room from "./pages/Room";
 import CreateRoom from "./pages/CreateRoom";
-// import io from "socket.io-client";
 
-// let socket;
+import io from "socket.io-client";
+
+let socket;
 
 function App() {
-  // const ENDPOINT = "http://localhost:3001";
-  // socket = io(ENDPOINT);
-  // socket.emit("connected", tempUsername);
 
-  // useEffect(() => {
-  //   effect
-  //   return () => {
-  //     cleanup
-  //   }
-  // }, [ENDPOINT])
+  const ENDPOINT = "http://localhost:3001";
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("connected", "tempUsernameVar");
+    console.log("socketio test");
+    // effect
+    return () => {
+      //return
+    }
+  }, [ENDPOINT])
 
   return (
     <Router>

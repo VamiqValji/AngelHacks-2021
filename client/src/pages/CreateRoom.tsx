@@ -1,10 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface CreateRoomProps {
 
 }
 
 const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
+
     const roomName = useRef<HTMLInputElement>(null);
     const inputName = useRef<HTMLInputElement>(null);
 

@@ -1,0 +1,6 @@
+socket connections working
+video pausing across users
+chat across users
+notes
+queue?
+link sharing?

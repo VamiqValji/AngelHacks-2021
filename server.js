@@ -1,7 +1,17 @@
 const app = require("express")();
 const http = require("http").Server(app);
-const io = require("socket.io")(http);
-const dotenv = require("dotenv").config();
+const cors = require("cors");
+app.use(cors({}));
+require("dotenv").config();
+
+const io = require("socket.io")(http, {
+  cors: {
+    origin: process.env.ORIGIN,
+    // origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+  },
+});
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>");
