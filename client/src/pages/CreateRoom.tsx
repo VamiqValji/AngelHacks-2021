@@ -1,26 +1,27 @@
-import React from 'react'
+import { useRef } from 'react';
 
 interface CreateRoomProps {
 
 }
 
 const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
-<<<<<<< HEAD
-=======
     const roomName = useRef<HTMLInputElement>(null);
->>>>>>> parent of d00a724 (create room //  merge conflict fixed)
+
+    const joinRoom = (e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(roomName.current?.value);
+    }
+
     return (
         <>
             <div className="containerContainer">
                 <div className="container">
-<<<<<<< HEAD
-                    <h2>Create</h2>
-=======
                     <h2>Create Room</h2>
-                    <input className="center" ref={roomName} type="text"/>
-                    <br/>
-                    <button className="center" >Create</button>
->>>>>>> parent of d00a724 (create room //  merge conflict fixed)
+                    <form onSubmit={(e) => joinRoom(e)} >
+                        <input className="center" ref={roomName} type="text"/>
+                        <br/>
+                        <button className="center">Create</button>
+                    </form>
                 </div>
             </div>
         </>
