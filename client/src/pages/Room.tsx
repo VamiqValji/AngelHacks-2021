@@ -1,14 +1,46 @@
 import { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player/lazy';
+import {
+    useParams,
+} from "react-router-dom";
+import io from "socket.io-client";
 
 interface RoomProps {}
 
+let socket;
 
 const Room: React.FC<RoomProps> = ({}) => {
+
+    const ENDPOINT = "http://localhost:3001";
+
+    let roomID:any = useParams();
+    console.log(roomID);
+    roomID = roomID.roomID;
+
+    const [roomData, setRoomData] = useState<any>({});
 
     const [currentVideo, setCurrentVideo] = useState<string>("");
 
     const [queue, setQueue] = useState<string[]>([]);
+
+    useEffect(() => {
+        socket = io(ENDPOINT);
+        socket.emit("connected", roomID);
+        socket.on("connectedResponse", (res) => {
+            console.log(res);
+            setRoomData(res);
+        })
+    
+        socket.on("updatePublicPlayers", (allUsers) => {
+          console.log(allUsers);
+        })
+    
+        return () => {
+          socket.emit("disconnected", "disconnected");
+          socket.disconnect();
+          socket.off();
+        }
+      }, [ENDPOINT])
 
     useEffect(() => {
         setQueue((prev) => [...prev,"https://www.youtube.com/watch?v=iv8rSLsi1xo&ab_channel=AnsonAlexander"]);
@@ -43,9 +75,19 @@ const Room: React.FC<RoomProps> = ({}) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
     return (
-        <div>
-            <ReactPlayer url={video} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} />
-        </div>
+        <>
+        {roomData.success === true ? (
+                    <div>
+                        <h2>Room: {roomData.roomName} </h2>
+                        <ReactPlayer url={video} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} />
+                    </div>
+        ) : (
+            <div>
+                <h2>Invalid Room</h2>
+            </div>
+        )}
+
+        </>
     )
 }
 

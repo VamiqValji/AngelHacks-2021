@@ -9,6 +9,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
 
     const roomName = useRef<HTMLInputElement>(null);
     const inputName = useRef<HTMLInputElement>(null);
+
     
     const joinRoom = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

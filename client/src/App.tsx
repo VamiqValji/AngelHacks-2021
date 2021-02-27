@@ -44,14 +44,17 @@ function App() {
         <div className="nav">
         <nav>
           <ul>
+          <li>
+              <Link to="/">Home</Link>
+            </li>
             <li>
-              <Link to="/">Join</Link>
+              <Link to="/join/:roomID">Join</Link>
             </li>
             <li>
               <Link to="/create">Create</Link>
             </li>
              <li>
-              <Link to="/room">Room</Link>
+              <Link to="/room/">Room</Link>
             </li>
             {allUsersNumber ? <div className="usersOnline">People Online: {allUsersNumber}</div> : ""}
           </ul>
@@ -64,10 +67,10 @@ function App() {
           <Route exact path="/create">
             <CreateRoom /* socket={socket} */ /> 
           </Route>
-          <Route exact path="/room">
+          <Route path="/room/:roomID">
             <Room />
           </Route>
-          <Route path="/:roomID">
+          <Route path="/join/:roomID">
             <Join />
           </Route>
         </Switch>

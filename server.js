@@ -34,40 +34,68 @@ dataList.push({
   users: [],
 });
 
+const joinRoom = (roomName = String, socket) => {
+  console.log(roomName);
+  socket.join(roomName);
+};
 const publicRoom = "PublicRoom";
 io.on("connection", (socket) => {
   if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}/room`)) {
     // private room
+    let room = "";
     socket.on("connected", (data) => {
+      console.log("priv");
       socket.join("priv");
+
+      let roomID = data;
+      console.log("roomID", roomID);
+
+      for (let i = 0; i < dataList.length; i++) {
+        if (dataList[i].roomID === roomID) {
+          // if room id is correct
+          socket.join(roomID);
+          console.log("correct id");
+          socket.emit("connectedResponse", {
+            success: true,
+            roomID: roomID,
+            roomName: dataList[i].roomName,
+          });
+        } else {
+          socket.emit("connectedResponse", {
+            success: false,
+          });
+        }
+      }
+
       allUsers++;
       console.log(data);
-      socket.broadcast.emit("updatePublicPlayers", allUsers);
+      // socket.broadcast.emit("updatePublicPlayers", allUsers);
     });
     socket.on("disconnected", (data) => {
       allUsers--;
       console.log(data);
-      socket.broadcast.emit("updatePublicPlayers", allUsers);
+      // socket.broadcast.emit("updatePublicPlayers", allUsers);
     });
   }
   // if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}`))
   else {
     // public
+    console.log("pub");
     socket.on("connected", (data) => {
       socket.join(publicRoom);
       allUsers++;
       console.log(data);
-      socket.broadcast.emit("updatePublicPlayers", allUsers);
+      // socket.broadcast.emit("updatePublicPlayers", allUsers);
     });
     socket.on("disconnected", (data) => {
       allUsers--;
       console.log(data);
-      socket.broadcast.emit("updatePublicPlayers", allUsers);
+      // socket.broadcast.emit("updatePublicPlayers", allUsers);
     });
     socket.on("t", (data) => {
       allUsers--;
       console.log("dd");
-      socket.broadcast.emit("updatePublicPlayers", allUsers);
+      // socket.broadcast.emit("updatePublicPlayers", allUsers);
     });
   }
 });
