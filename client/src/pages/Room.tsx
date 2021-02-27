@@ -6,7 +6,13 @@ interface RoomProps {
 
 const Room: React.FC<RoomProps> = ({}) => {
     return (
-        <div>Room</div>
+        <>
+            <div className="containerContainer">
+                <div className="container">
+                    <h2>Room</h2>
+                </div>
+            </div>
+        </>
     );
 }
 

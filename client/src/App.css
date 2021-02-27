@@ -1,9 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;900&display=swap");
+
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
 :root {
   --grey: #282c34;
+  --red: #e74c3c;
+}
+
+body {
+  background: var(--grey);
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+a:hover {
+  transition: 0.2s;
+  color: var(--red);
+}
+
+/* MY CLASS SHORTCUTS*/
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+/* MY CLASS SHORTCUTS*/
+
+.nav {
+  width: 100vw;
+  background-color: var(--grey);
+  filter: drop-shadow(0rem 0rem 0.1rem black);
+}
+
+.nav nav ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+
+.nav nav ul li {
+  font-size: 2em;
+  margin: 1rem;
+  padding: 1rem;
+}
+
+/* NAV BAR END */
+
+.containerContainer,
+.container h2 {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+.container input[type="submit"] {
+  margin-top: 1rem;
+  color: black;
 }
