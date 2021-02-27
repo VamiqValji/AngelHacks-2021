@@ -1,11 +1,21 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import axios from "axios";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    useParams,
+    Redirect
+} from "react-router-dom";
 
 interface JoinProps {
 
 }
 
 const Join: React.FC<JoinProps> = ({}) => {
+
+
+
     const roomName = useRef<HTMLInputElement>(null);
     const inputName = useRef<HTMLInputElement>(null);
     
@@ -23,6 +33,29 @@ const Join: React.FC<JoinProps> = ({}) => {
             console.error(err);
         }
     }
+
+    let roomID:any = useParams();
+    console.log(roomID);
+    useEffect(() => {
+        roomID = roomID.roomID;
+        const getResponse = async (roomID:string) => {
+            if (roomID.length > 3) {
+                try {
+                    const resp = await axios.post('http://localhost:3001/join', 
+                    {
+                        name: inputName.current?.value,
+                        roomName: roomName.current?.value,
+                        roomID: roomID
+                    });
+                    console.log("res data: ", resp.data);
+                } catch (err) {
+                    console.error(err);
+                }
+            }    
+        }
+
+        getResponse(roomID);
+    }, [])
 
     return (
         <>

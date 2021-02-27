@@ -26,13 +26,13 @@ const io = require("socket.io")(server, {
 
 let allUsers = 0;
 
-// let dataListExample = {
-//   roomName: "test1",
-//   roomID: "test2",
-//   users: [],
-// }
-
 let dataList = []; // users and rooms
+
+dataList.push({
+  roomName: "test",
+  roomID: "test",
+  users: [],
+});
 
 const publicRoom = "PublicRoom";
 io.on("connection", (socket) => {
@@ -103,11 +103,20 @@ app.post("/create", (req, res) => {
 
 app.post("/join", (req, res) => {
   // res.send("<h1>Join</h1>");
+  console.log("joining");
   for (let i = 0; i < dataList.length; i++) {
+    // if room name is correct
     if (dataList[i].roomName === req.body.roomName) {
+      console.log("correct body name");
       return res
-        .status(400)
-        .json({ message: "Success ", /*roomID: random,*/ redirect: true });
+        .status(200)
+        .json({ message: "Success", /*roomID: random,*/ redirect: true });
+    } else if (dataList[i].roomID === req.body.roomID) {
+      // if room id is correct
+      console.log("correct id");
+      return res
+        .status(200)
+        .json({ message: "Success", /*roomID: random,*/ redirect: true });
     }
   }
   return res

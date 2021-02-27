@@ -6,6 +6,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import Home from "./pages/Home";
 import Join from "./pages/Join";
 import Room from "./pages/Room";
 import CreateRoom from "./pages/CreateRoom";
@@ -58,13 +59,16 @@ function App() {
         </div>
         <Switch>
           <Route exact path="/">
-            <Join />
+            <Home />
           </Route>
           <Route exact path="/create">
             <CreateRoom /* socket={socket} */ /> 
           </Route>
           <Route exact path="/room">
             <Room />
+          </Route>
+          <Route path="/:roomID">
+            <Join />
           </Route>
         </Switch>
       </div>
