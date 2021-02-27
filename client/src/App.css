@@ -32,6 +32,10 @@ a:hover {
   justify-content: center;
 }
 
+.black {
+  background: black;
+}
+
 /* MY CLASS SHORTCUTS*/
 
 .nav {
