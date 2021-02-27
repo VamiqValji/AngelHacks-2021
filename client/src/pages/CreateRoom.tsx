@@ -12,6 +12,11 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                     <h2>Create</h2>
                 </div>
             </div>
+            <div className-"containerContainer">
+            	<div className="container">
+            		<p2>Name</p2>
+            	</div>
+            </div>
         </>
     );
 }
