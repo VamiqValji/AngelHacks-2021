@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import axios from "axios";
 
 interface CreateRoomProps {
     // socket: CreateRoomProps
@@ -9,9 +10,32 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
     const roomName = useRef<HTMLInputElement>(null);
     const inputName = useRef<HTMLInputElement>(null);
     
-    const joinRoom = (e:React.FormEvent<HTMLFormElement>) => {
+    const joinRoom = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(roomName.current?.value);
+
+        try {
+            const resp = await axios.post('http://localhost:3001/create', 
+            {
+                name: inputName.current?.value,
+                roomName: roomName.current?.value
+            });
+            console.log("res data: ", resp.data);
+        } catch (err) {
+            console.error(err);
+        }
+
+        // axios
+        // .post("http://localhost:3001/create", {
+        //     roomName: roomName.current?.value,
+        // })
+        // .then((res) => {
+        //     console.log("res data: ", res.data);
+        // })
+        // .catch((err) => {
+        //     console.warn(err);
+        // });
+
+        console.log();
     }
 
     return (

@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
+const router = require("express").Router();
 
 app.use(express.json());
 
@@ -24,7 +25,15 @@ const io = require("socket.io")(server, {
 });
 
 let allUsers = 0;
-let usersList = [];
+
+// let dataListExample = {
+//   roomName: "test1",
+//   roomID: "test2",
+//   users: [],
+// }
+
+let dataList = []; // users and rooms
+
 const publicRoom = "PublicRoom";
 io.on("connection", (socket) => {
   if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}/room`)) {
@@ -67,12 +76,42 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>");
 });
 
-app.get("/create", (req, res) => {
-  res.send("<h1>Create</h1>");
+app.post("/create", (req, res) => {
+  console.log("create");
+  // res.send("<h1>Create</h1>");
+  let random = Math.random().toString(36).substring(7);
+
+  for (let i = 0; i < dataList.length; i++) {
+    if (
+      dataList[i].roomID === random ||
+      dataList[i].roomName === req.body.roomName
+    ) {
+      return res.status(400).json({ message: "Incorrect ", redirect: false });
+    }
+  }
+
+  dataList.push({
+    roomName: req.body.roomName,
+    roomID: random,
+    users: [req.body.name],
+  });
+
+  return res
+    .status(201)
+    .json({ message: "Created Room.", roomID: random, redirect: true });
 });
 
-app.get("/join", (req, res) => {
+app.post("/join", (req, res) => {
   res.send("<h1>Join</h1>");
+  for (let i = 0; i < dataList.length; i++) {
+    if (
+      dataList[i].roomID === random ||
+      dataList[i].roomName === req.body.roomName
+    ) {
+      return res.status(400).json({ message: "Success ", redirect: false });
+    }
+  }
+  return res.status(404).json({ message: "", roomID: random, redirect: true });
 });
 
 server.listen(process.env.PORT, () => {
