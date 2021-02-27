@@ -6,7 +6,13 @@ interface JoinProps {
 
 const Join: React.FC<JoinProps> = ({}) => {
     return (
-        <div>Join</div>
+        <>
+            <div className="containerContainer">
+                <div className="container">
+                    <h2>Join</h2>
+                </div>
+            </div>
+        </>
     );
 }
 

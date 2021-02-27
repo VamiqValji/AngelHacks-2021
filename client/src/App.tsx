@@ -14,21 +14,21 @@ function App() {
   return (
     <Router>
       <div>
+        <div className="nav">
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">Join</Link>
             </li>
             <li>
               <Link to="/create">Create</Link>
             </li>
-            <li>
+            {/* <li>
               <Link to="/room">Room</Link>
-            </li>
+            </li> */}
           </ul>
         </nav>
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
+        </div>
         <Switch>
           <Route exact path="/">
             <Join />
