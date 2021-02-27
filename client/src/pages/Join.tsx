@@ -9,7 +9,7 @@ const Join: React.FC<JoinProps> = ({}) => {
         <>
             <div className="containerContainer">
                 <div className="container">
-                    <h2>Join</h2>
+                    <h2>Join Room</h2>
                 </div>
             </div>
         </>
