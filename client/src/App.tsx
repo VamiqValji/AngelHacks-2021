@@ -1,48 +1,18 @@
-  
+import { url } from 'inspector';
 import React from 'react';
 import './App.css';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-import Join from "./pages/Join";
-import Room from "./pages/Room";
-import CreateRoom from "./pages/CreateRoom";
+import ReactPlayer from 'react-player/youtube'
 
 function App() {
+  
   return (
-    <Router>
-      <div>
-        <div className="nav">
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Join</Link>
-            </li>
-            <li>
-              <Link to="/create">Create</Link>
-            </li>
-            {/* <li>
-              <Link to="/room">Room</Link>
-            </li> */}
-          </ul>
-        </nav>
+    <div className="App">
+      <header className="App-header">
+        <div>
+        
         </div>
-        <Switch>
-          <Route exact path="/">
-            <Join />
-          </Route>
-          <Route exact path="/create">
-            <CreateRoom />
-          </Route>
-          <Route exact path="/room">
-            <Room />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+      </header>
+    </div>
   );
 }
 
