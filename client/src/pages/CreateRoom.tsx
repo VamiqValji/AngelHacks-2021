@@ -1,14 +1,14 @@
 import { useRef, useEffect } from 'react';
 
 interface CreateRoomProps {
-
+    // socket: CreateRoomProps
 }
 
 const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
 
     const roomName = useRef<HTMLInputElement>(null);
     const inputName = useRef<HTMLInputElement>(null);
-
+    
     const joinRoom = (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log(roomName.current?.value);

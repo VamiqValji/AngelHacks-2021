@@ -61,7 +61,7 @@ function App() {
             <Join />
           </Route>
           <Route exact path="/create">
-            <CreateRoom />
+            <CreateRoom /* socket={socket} */ /> 
           </Route>
           <Route exact path="/room">
             <Room />
