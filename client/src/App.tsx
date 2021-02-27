@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -9,8 +9,22 @@ import {
 import Join from "./pages/Join";
 import Room from "./pages/Room";
 import CreateRoom from "./pages/CreateRoom";
+// import io from "socket.io-client";
+
+// let socket;
 
 function App() {
+  // const ENDPOINT = "http://localhost:3001";
+  // socket = io(ENDPOINT);
+  // socket.emit("connected", tempUsername);
+
+  // useEffect(() => {
+  //   effect
+  //   return () => {
+  //     cleanup
+  //   }
+  // }, [ENDPOINT])
+
   return (
     <Router>
       <div>

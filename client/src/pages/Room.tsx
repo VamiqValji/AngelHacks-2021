@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import ReactPlayer from 'react-player/lazy'
+import { useState, useEffect } from 'react';
+import ReactPlayer from 'react-player/lazy';
 
-interface Props {}
+interface RoomProps {}
 
 
 const Room: React.FC<RoomProps> = ({}) => {
@@ -22,13 +22,14 @@ const Room: React.FC<RoomProps> = ({}) => {
     var newVideo = "https://www.youtube.com/watch?v=Rq5SEhs9lws"
 
     const start = () => {
-        
-        isPlaying = true;
+        setIsPlaying(true);
+        // isPlaying = true;
         alert(isPlaying)
     }
     
     const pause = () => {
-        isPlaying = false;
+        // isPlaying = false;
+        setIsPlaying(false);
         alert(isPlaying)
     }
 
@@ -38,7 +39,8 @@ const Room: React.FC<RoomProps> = ({}) => {
         setVideo(prevVideo => prevVideo = newVideo)
     }
 
-    var isPlaying = false;
+    // var isPlaying = false;
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
     return (
         <div>
