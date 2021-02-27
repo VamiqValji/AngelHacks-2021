@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import ReactPlayer from 'react-player/youtube'
+import ReactPlayer from 'react-player/lazy'
 
 interface Props {}
 
 
-const Room: React.FC<Props> = () => {
+const Room: React.FC<RoomProps> = ({}) => {
 
     const [currentVideo, setCurrentVideo] = useState<string>("");
 
@@ -19,13 +19,33 @@ const Room: React.FC<Props> = () => {
         setCurrentVideo(url);
     }
 
+    var newVideo = "https://www.youtube.com/watch?v=Rq5SEhs9lws"
+
+    const start = () => {
+        
+        isPlaying = true;
+        alert(isPlaying)
+    }
+    
+    const pause = () => {
+        isPlaying = false;
+        alert(isPlaying)
+    }
+
+    const [video, setVideo] = useState("https://youtu.be/e91M0XLX7Jw")
+
+    function nextVideo() {
+        setVideo(prevVideo => prevVideo = newVideo)
+    }
+
+    var isPlaying = false;
+
     return (
         <div>
-            <ReactPlayer url='https://www.youtube.com/watch?v=e91M0XLX7Jw' controls={true} volume={0.5} />
-        <button onClick={() => changeUrl("test")}>ttt</button>
-            {currentVideo}
+            <ReactPlayer url={video} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} />
         </div>
-    );
+    )
 }
+
 
 export default Room;
