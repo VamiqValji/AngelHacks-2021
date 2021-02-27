@@ -86,7 +86,7 @@ app.post("/create", (req, res) => {
       dataList[i].roomID === random ||
       dataList[i].roomName === req.body.roomName
     ) {
-      return res.status(400).json({ message: "Incorrect ", redirect: false });
+      return res.status(400).json({ message: "Duplicate", redirect: false });
     }
   }
 
@@ -102,16 +102,17 @@ app.post("/create", (req, res) => {
 });
 
 app.post("/join", (req, res) => {
-  res.send("<h1>Join</h1>");
+  // res.send("<h1>Join</h1>");
   for (let i = 0; i < dataList.length; i++) {
-    if (
-      dataList[i].roomID === random ||
-      dataList[i].roomName === req.body.roomName
-    ) {
-      return res.status(400).json({ message: "Success ", redirect: false });
+    if (dataList[i].roomName === req.body.roomName) {
+      return res
+        .status(400)
+        .json({ message: "Success ", /*roomID: random,*/ redirect: true });
     }
   }
-  return res.status(404).json({ message: "", roomID: random, redirect: true });
+  return res
+    .status(404)
+    .json({ message: "Room not found." /*, roomID: random, redirect: true*/ });
 });
 
 server.listen(process.env.PORT, () => {
