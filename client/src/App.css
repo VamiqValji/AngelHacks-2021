@@ -26,8 +26,27 @@ a:hover {
   color: var(--red);
 }
 
+/* .homeContainer {
+  display: flex;
+  justify-content: center;
+} */
+.watchContainer {
+  margin: 0.4rem;
+  margin-top: 1rem;
+  font-size: 3em;
+}
 .watch {
   color: var(--red);
+}
+.homeContainer h3 {
+  font-size: 1.5em;
+}
+.homeContainer button {
+  margin-top: 1.5rem;
+  font-size: 2em;
+  border-radius: 1.7rem;
+  font-weight: 600;
+  padding: 1rem;
 }
 
 /* MY CLASS SHORTCUTS*/
@@ -48,6 +67,12 @@ h3 {
 .whiteSmoke {
   color: var(--whiteSmoke);
 }
+.white {
+  color: white;
+}
+.light {
+  font-weight: 500;
+}
 
 /* MY CLASS SHORTCUTS*/
 
@@ -67,7 +92,7 @@ h3 {
 .nav nav ul li {
   font-size: 2em;
   margin: 1rem;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 /* NAV BAR END */
@@ -115,6 +140,28 @@ button {
 }
 button:hover {
   background: var(--red);
+}
+
+.joinCreateContainer {
+  margin-top: 0.3rem;
+  display: flex;
+  justify-content: center;
+}
+.joinCreate h2 {
+  font-size: 2em;
+}
+.joinCreate h3 {
+  font-size: 1.6em;
+}
+.joinCreate input {
+  font-size: 1.2em;
+  padding: 1rem;
+  border-radius: 2rem;
+}
+.joinCreate button {
+  font-size: 1.2em;
+  padding: 1rem;
+  border-radius: 2rem;
 }
 
 .queueContainer h2 {
