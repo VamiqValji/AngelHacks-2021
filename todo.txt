@@ -1,0 +1,9 @@
+trying to get different rooms working
+at the same time rn
+
+socket connections working
+video pausing across users
+chat across users
+notes
+queue?
+link sharing?

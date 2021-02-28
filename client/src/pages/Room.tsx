@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef } from 'react'
 import ReactPlayer from 'react-player/lazy'
 import CanvasDraw from "react-canvas-draw";
+import {
+    useParams,
+} from "react-router-dom";
+import io from "socket.io-client";
 
 interface RoomProps {}
 
 
+let socket;
 
 const Room: React.FC<RoomProps> = ({}) => {
     const state = {
@@ -16,9 +21,46 @@ const Room: React.FC<RoomProps> = ({}) => {
       };
     const inputRef = useRef<any>(null);
 
+    const ENDPOINT = "http://localhost:3001";
+
+    let roomID:any = useParams();
+    console.log(roomID);
+    roomID = roomID.roomID;
+
+    const [roomData, setRoomData] = useState<any>({});
+
     const [currentVideo, setCurrentVideo] = useState<string>("");
 
     const [queue, setQueue] = useState<string[]>([]);
+
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+    useEffect(() => {
+        socket = io(ENDPOINT);
+        // console.log("connected", roomID);
+        socket.emit("connected", roomID);
+
+        socket.on("connectedResponse", (res) => {
+            console.log(res);
+            setRoomData(res);
+        })
+    
+        socket.on("playClient", (data) => {
+        //   console.log(data);
+            setIsPlaying(true);
+        })
+
+        socket.on("pauseClient", (data) => {
+            // console.log(data);
+            setIsPlaying(false);
+          })
+    
+        return () => {
+          socket.emit("disconnected", "disconnected");
+          socket.disconnect();
+          socket.off();
+        }
+      }, [ENDPOINT, roomID, setRoomData, setIsPlaying])
 
     useEffect(() => {
         //setQueue((prev) => [...prev,"https://www.youtube.com/watch?v=iv8rSLsi1xo&ab_channel=AnsonAlexander"]);
@@ -32,15 +74,19 @@ const Room: React.FC<RoomProps> = ({}) => {
         setQueue(temps);
 
     }
-    var isPlaying = false;
 
     const start = () => {
-        
-        isPlaying = true;
+        socket.emit("play"/*, "username"*/);
+        setIsPlaying(true);
+        // isPlaying = true;
+        // alert(isPlaying)
     }
     
     const pause = () => {
-        isPlaying = false;
+        socket.emit("pause"/*, "username"*/);
+        // isPlaying = false;
+        setIsPlaying(false);
+        // alert(isPlaying)
     }
 
     const time = (sec:any) => {
@@ -78,6 +124,8 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     return (
         <div>
+           {roomData.success === true ? (
+               <div>
             <h1>Current Video: <a href={currentVideo}> </a> </h1>
             <ReactPlayer url={currentVideo} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} onSeek ={(sec)=>time(sec)} style={{ margin: "0 auto"}} width={888} height={500}/>
             <input type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
@@ -89,18 +137,28 @@ const Room: React.FC<RoomProps> = ({}) => {
             
 
             <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef}/>
-            <button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
-            <h2>Queue:</h2>
+            {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
+            }<h2>Queue:</h2>
             <ul>
                 {queue.map((number) =>
                  <ListItem key={number.toString()}
                 value={number} />
                 )}
             </ul>
+            </div>
+           ) : (
+            <div>
+               <h2>Invalid Room</h2>
+            </div>
+           ) } 
+
+            
         </div>
             
     )
 }
+//<h2>Room: {roomData.roomName} </h2>
+
 
 
 export default Room;
