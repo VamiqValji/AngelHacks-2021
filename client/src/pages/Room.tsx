@@ -34,7 +34,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     const [userUsername, setUserUsername] = useState<string>("")
     const inputUsernameRef = useRef<HTMLInputElement>(null);
 
-    const chatArea = useRef<HTMLDivElement>(null);
+    const chatArea = useRef<any>(null);
     const inputChatArea = useRef<any>(null);
 
     const Modal = () => {
@@ -86,11 +86,16 @@ const Room: React.FC<RoomProps> = ({}) => {
             span.innerHTML = `<span style={{fontSize:25}}><b>${USERNAME}</b> ${event}.</span>`;
         }
         // document.getElementsByClassName("messageArea")[0].appendChild(span);
-        chatArea.current?.append(span);
-        chatArea.current?.scrollBy(0,chatArea.current?.scrollHeight);
         if (who === "you") {
             inputChatArea.current.value = "";
         }
+        // for (let i = 0; i < chatArea.current?.children.length; i++) {
+        //     if (chatArea.current?.children[i].value === `${USERNAME} ${event}.`) {
+        //         return;
+        //     }
+        // }
+        chatArea.current?.append(span);
+        chatArea.current?.scrollBy(0,chatArea.current?.scrollHeight);
 
         // const sendMsgOREventToServer = () => {
 
@@ -124,6 +129,10 @@ const Room: React.FC<RoomProps> = ({}) => {
             roomID: roomID,
             username: userUsername
         });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "joined the room"
+        // });
 
         socket.on("connectedResponse", (res) => {
             console.log("CONNECTED RES",res);
@@ -163,10 +172,28 @@ const Room: React.FC<RoomProps> = ({}) => {
             setQueue(temp);
         })
 
+        socket.on("receiveEvent", (data) => {
+            let whoArg;
+
+            if (data.username === userUsername) {
+                whoArg = "you";
+            } else {
+                whoArg = "other"
+            }
+
+            // MsgOrEventHandler("","event",data.username, whoArg, data.event);
+            MsgOrEventHandler("test", "event", userUsername, "other", "joined");
+
+        })
+
         return () => {
-          socket.emit("disconnected", {
-            username: userUsername,
-          });
+        //   socket.emit("disconnected", {
+        //     username: userUsername,
+        //   });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "left the room"
+        // });
           socket.disconnect();
           socket.off();
         }
@@ -185,6 +212,10 @@ const Room: React.FC<RoomProps> = ({}) => {
                 username: userUsername,
                 queue: temps
             });
+            // socket.emit("sendEvent", {
+            //     username: userUsername,
+            //     event: "skipped"
+            // });
         }
     }
 
@@ -193,6 +224,10 @@ const Room: React.FC<RoomProps> = ({}) => {
             username: userUsername,
             currentTime: videoRef.current.getCurrentTime()
         });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "changed the timestamp"
+        // });
     }
 
     const start = () => {
@@ -200,6 +235,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.emit("play", {
             username: userUsername,
         });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "started the video"
+        // });
         setIsPlaying(true);
         // isPlaying = true;
         // alert(isPlaying)
@@ -210,6 +249,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.emit("pause", {
             username: userUsername,
         });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "paused the video"
+        // });
         // isPlaying = false;
         setIsPlaying(false);
         // alert(isPlaying)
@@ -248,6 +291,10 @@ const Room: React.FC<RoomProps> = ({}) => {
                     queue: temp,
                     username: userUsername,
                 });
+                // socket.emit("sendEvent", {
+                //     username: userUsername,
+                //     event: "updated the queue"
+                // });
             } else {
                 alert("Cannot Play that. Please Try Another URL")
             }

@@ -12,6 +12,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
     const inputName = useRef<HTMLInputElement>(null);
     const linkRef = useRef<any>(null);
     const [gotSuccessRes, setGotSuccessRes] = useState<boolean>(false);
+    const [gotFailedRes, setGotFailedRes] = useState<boolean>(false);
     const [roomID, setRoomID] = useState<string>("");
 
     
@@ -26,9 +27,11 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
             });
             console.log("res data: ", resp.data);
             setGotSuccessRes(true);
+            setGotFailedRes(false);
             setRoomID(resp.data.roomID);
         } catch (err) {
             setGotSuccessRes(false);
+            setGotFailedRes(true);
             console.error(err);
         }
 
@@ -82,7 +85,9 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                             <Link to={`/room/${roomID}`}><button style={{marginTop:-15, fontSize:20}} className="center">Take me there!</button></Link>
                         </>
                     ) : (
-                        <></>
+                        <>
+                            {gotFailedRes && <span className="c error">Error</span> }
+                        </>
                     )}
                     </div>
                 </div>
