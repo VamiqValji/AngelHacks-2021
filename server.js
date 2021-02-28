@@ -45,11 +45,13 @@ dataList.push(
   }
 );
 
-const joinRoom = (roomName = String, socket) => {
-  console.log(roomName);
-  socket.join(roomName);
-};
-const publicRoom = "PublicRoom";
+// const joinRoom = (roomName = String, socket) => {
+//   console.log(roomName);
+//   socket.join(roomName);
+// };
+
+// const publicRoom = "PublicRoom";
+
 io.on("connection", (socket) => {
   //if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}/room`)) {
   // private room
@@ -138,6 +140,14 @@ io.on("connection", (socket) => {
         });
       }
     }
+  });
+  socket.on("sendMessage", (data) => {
+    console.log("sendMessage");
+    socket.to(roomID).broadcast.emit("receiveMessage", data);
+  });
+  socket.on("sendEvent", (data) => {
+    console.log("sendEvent");
+    socket.to(roomID).broadcast.emit("receiveEvent", data);
   });
 
   allUsers++;

@@ -64,6 +64,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         
         let WHO;
         if (who === "you") {
+            socket.emit("sendMessage", {
+                username: userUsername,
+                message: message,
+            });
             WHO = "(You)";
         } else if (who === "other") {
             WHO = "";
@@ -84,7 +88,9 @@ const Room: React.FC<RoomProps> = ({}) => {
         // document.getElementsByClassName("messageArea")[0].appendChild(span);
         chatArea.current?.append(span);
         chatArea.current?.scrollBy(0,chatArea.current?.scrollHeight);
-        inputChatArea.current.value = "";
+        if (who === "you") {
+            inputChatArea.current.value = "";
+        }
 
         // const sendMsgOREventToServer = () => {
 
@@ -100,11 +106,16 @@ const Room: React.FC<RoomProps> = ({}) => {
         if (inputChatArea.current?.value.length <= 0) return;
         console.log(inputChatArea.current?.value);
         console.log(chatArea.current);
-        MsgOrEventHandler(inputChatArea.current.value, "msg", userUsername, "you", "joined");
-        MsgOrEventHandler("other test", "msg", userUsername, "other");
-        MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "joined");
-        MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "paused");
+        MsgOrEventHandler(inputChatArea.current.value, "msg", userUsername, "you");
+        // MsgOrEventHandler("other test", "msg", userUsername, "other");
+        // MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "joined");
+        // MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "paused");
     }
+
+    // socket.emit("sendEvent", {
+    //     username: userUsername,
+    //     event: "event",
+    // });
 
     useEffect(() => {
         socket = io(ENDPOINT);
@@ -138,6 +149,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.on("updateQueueClient", (data) => {
             console.log("data.queue", data.queue)
             setQueue(data.queue);
+        })
+
+        socket.on("receiveMessage", (data) => {
+            MsgOrEventHandler(data.message, "msg", data.username, "other");
         })
 
         socket.on("nextVideoClient", (data) => {
@@ -358,10 +373,10 @@ const Room: React.FC<RoomProps> = ({}) => {
                         </h2>
                         <div className="messageAreaContainer">
                         <div ref={chatArea} className="messageArea">
-                        <span id="you"><br/>messagemessagemessagemessagemessagemessagemessage</span>
+                        {/* <span id="you"><br/>messagemessagemessagemessagemessagemessagemessage</span>
                                 {[1,2,3,5,6,8,9].map((n) => {
                                     return <span key={n} id="other"><br/>{n}</span>
-                                })}
+                                })} */}
                         </div>
                         </div>
                         <div className="messageBoxContainer">
