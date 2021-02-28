@@ -36,6 +36,10 @@ const Room: React.FC<RoomProps> = ({}) => {
     const chatArea = useRef<any>(null);
     const inputChatArea = useRef<any>(null);
 
+    const [count, setCount] = useState<number>(0);
+    const [duration, setDuration] = useState<any>("");
+    const [seekTime,setSeekTime] = useState(0);
+
     const Modal = () => {
         
         const submitUsername = (username:any) => {
@@ -82,7 +86,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         if (msgOrEvent === "msg") {
             span.innerHTML = `<span key={${message + Math.random()}} id=${who}><div><li>${USERNAME}<li class="who">${WHO}</li></li><li class="currentTime">${currentTime}</li></div>${message}</span>`;
         } else if (msgOrEvent === "event") {
-            span.innerHTML = `<span style={{fontSize:25}}><b>${USERNAME}</b> ${event}.</span>`;
+            span.innerHTML = `<span style={{fontSize:25}}><b>${USERNAME}</b> ${event}.<li class="currentTime">${currentTime}</li></span>`;
         }
         // document.getElementsByClassName("messageArea")[0].appendChild(span);
         if (who === "you") {
@@ -138,6 +142,7 @@ const Room: React.FC<RoomProps> = ({}) => {
             setRoomData(res);
             console.log("connectRes:res.dataList.queue", res.dataList.queue)
             setQueue(res.dataList.queue);
+            setDuration(res.duration);
         })
         
         socket.on("changeTime", data => {
@@ -147,11 +152,13 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.on("playClient", (data) => {
         //   console.log(data);
             setIsPlaying(true);
+            MsgOrEventHandler("", "event", data.username, "other", "hit play");
         })
 
         socket.on("pauseClient", (data) => {
             // console.log(data);
             setIsPlaying(false);
+            MsgOrEventHandler("", "event", data.username, "other", "hit pause");
         })
     
         socket.on("updateQueueClient", (data) => {
@@ -241,29 +248,38 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const start = () => {
         //
-        socket.emit("play", {
-            username: userUsername,
-        });
+        if (count > 2) {
+            socket.emit("play", {
+                username: userUsername,
+            });
+            setIsPlaying(true);
+        }
+        setCount(count + 1);
+
         // socket.emit("sendEvent", {
         //     username: userUsername,
         //     event: "started the video"
         // });
-        setIsPlaying(true);
         // isPlaying = true;
         // alert(isPlaying)
     }
     
     const pause = () => {
         //videoRef.current.seekTo(currentTime, 'seconds')
-        socket.emit("pause", {
-            username: userUsername,
-        });
+        if (count > 2) {
+            socket.emit("pause", {
+                username: userUsername,
+            });
+            setIsPlaying(false);
+    
+            setCount(count + 1);
+        }
+
         // socket.emit("sendEvent", {
         //     username: userUsername,
         //     event: "paused the video"
         // });
         // isPlaying = false;
-        setIsPlaying(false);
         // alert(isPlaying)
     }
 
@@ -316,7 +332,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         <li>{props.value}</li>
         )
     }
-    const [seekTime ,setSeekTime] = useState(0);
     function handleSeeking(seconds) {
         console.log(seekTime)                       //9                    //15
         if(seconds.playedSeconds - seekTime > 2 || seconds.playedSeconds - seekTime < -2) {

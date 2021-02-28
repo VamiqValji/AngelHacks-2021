@@ -79,6 +79,7 @@ io.on("connection", (socket) => {
           roomID: roomID,
           roomName: dataList[i].roomName,
           dataList: dataList[i],
+          duration: dataList[i].duration,
         });
         try {
           if (data.username.length > 0) {
@@ -128,7 +129,15 @@ io.on("connection", (socket) => {
   });
   socket.on("time", (data) => {
     console.log("changing time");
-    socket.to(roomID).broadcast.emit("changeTime", data);
+
+    for (let i = 0; i < dataList.length; i++) {
+      if (dataList[i].roomID === roomID) {
+        dataList[i].duration = data.currentTime;
+      }
+    }
+
+    // socket.to(roomID).broadcast.emit("changeTime", data);
+    io.in(roomID).emit("changeTime", data);
   });
   socket.on("updateQueue", (data) => {
     for (let i = 0; i < dataList.length; i++) {
@@ -177,6 +186,7 @@ io.on("connection", (socket) => {
     if (name.length > 0) {
       socket.to(roomID).broadcast.emit("userDisconnected", {
         username: name,
+        usersList: dataList.users,
       });
     }
   };
@@ -213,6 +223,17 @@ io.on("connection", (socket) => {
       //   });
       // }
     }
+
+    // let users = [];
+    // for (let i = 0; i < dataList.users.length; i++) {
+    //   users = dataList[i].users;
+    //   if (user.usersID === socket.id) {
+    //     const index = dataList.users.indexOf(user);
+    //     if (index > -1) {
+    //       dataList.users.splice(index, 1);
+    //     }
+    //   }
+    // }
 
     allUsers--;
     console.log("disconnect", socket.id, name);
