@@ -1,5 +1,3 @@
 deploy
 
-devpost
-script 
-video
+

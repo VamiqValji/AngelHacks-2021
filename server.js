@@ -28,7 +28,8 @@ if (process.env.NODE_ENV === "production") {
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: process.env.ORIGIN, // origin: "*",
+    // origin: process.env.ORIGIN,
+    origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
   },
