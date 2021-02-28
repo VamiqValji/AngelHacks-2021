@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import axios from "axios";
-import { BooleanLiteral } from 'typescript';
+import {Link} from "react-router-dom";
 
 interface CreateRoomProps {
     // socket: CreateRoomProps
@@ -57,21 +57,29 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                     <div className="joinCreate">
                     <h2>Create Room</h2>
                     <form onSubmit={(e) => joinRoom(e)} >
-                        <h3>Room Name</h3>
+                        <h3 style={{margin:10}} className="center">Room Name</h3>
+                        <span className="center" >
                         <input className="center" ref={roomName} type="text" placeholder="Enter room name..." />
+                        </span>
                         <br/>
-                        <h3>Username</h3>
+                        <h3 style={{margin:10, marginTop:-10}} className="center">Username</h3>
+                        <span className="center" >
                         <input className="center" ref={inputName} type="text" placeholder="Enter your name..." />
+                        </span>
                         <br/>
                         <button className="center">Create</button>
                     </form>
                     { gotSuccessRes ? ( // roomID.length > 3
                         <>
-                            <div>Give this link to your friends!</div>
+                            <div style={{marginTop:20}}>Give this link to your friends!</div>
                             <br/>
+                            <span style={{marginTop:-20}} className="center" >
                             <input ref={linkRef} type="text" value={`${window.location.href.replace("/create", "/room/")}${roomID}`} placeholder="Link To Room" />
+                            </span>
                             <br/>
-                            <button onClick={copyToClipboard}>Copy Me!</button>
+                            <button style={{marginTop:-20, fontSize:15}} className="center" onClick={copyToClipboard}>Copy Me!</button>
+                            <br/>
+                            <Link to={`/room/${roomID}`}><button style={{marginTop:-15, fontSize:20}} className="center">Take me there!</button></Link>
                         </>
                     ) : (
                         <></>
