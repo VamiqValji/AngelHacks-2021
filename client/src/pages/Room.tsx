@@ -95,7 +95,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     }
 
     const time = (sec:any) => {
-        alert(sec);
+        // alert(sec);
     }
 
 
@@ -115,6 +115,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         if(data != "") {
             if(ReactPlayer.canPlay(data)) {
                 setQueue((prev) => [...prev, data]);
+                console.log("queue",queue);
             } else {
                 alert("Cannot Play that. Please Try Another URL")
             }
@@ -123,7 +124,7 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     function ListItem(props:any) {
         return (
-        <li style={{color: "red"}}>{props.value}</li>
+        <li>{props.value}</li>
         )
     }
 
@@ -166,8 +167,8 @@ const Room: React.FC<RoomProps> = ({}) => {
                 {queue.length > 0 ? (
                     <ul className="center">
                     {queue.map((number) =>
-                    <ListItem key={number.toString()}
-                    value={number} />
+                        <ListItem key={number.toString()}
+                        value={number} />
                     )}
                 </ul>
                 ) : (
