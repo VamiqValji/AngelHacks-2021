@@ -76,3 +76,26 @@ a:hover {
   border-radius: 1rem;
   background: rgba(0, 0, 0, 0.4);
 }
+
+input {
+  background: black;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  color: whitesmoke;
+}
+button {
+  color: white;
+  background: black;
+  border: none;
+  /* display: flex;
+  justify-content: center; */
+  margin: 0 auto;
+  font-size: 1em;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  transition: 0.2s;
+}
+button:hover {
+  background: var(--red);
+}
