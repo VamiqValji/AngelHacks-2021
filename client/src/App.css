@@ -90,6 +90,11 @@ h3 {
   display: flex;
   justify-content: center;
   color: white;
+  max-height: 7rem;
+}
+.githubLogo {
+  margin-left: -2.7rem;
+  font-size: 1.5em;
 }
 
 .nav nav ul li {
@@ -396,4 +401,20 @@ form.messageBox {
   width: 5rem;
   border-radius: 1rem;
   background: rgba(255, 0, 0, 0.4);
+}
+
+.sticky {
+  position: sticky;
+}
+.copyMe {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding: 0.6rem;
+  border-radius: 0rem 0.5rem 0rem 0rem;
+  background: rgba(0, 0, 0, 0.4);
+}
+.copyMe h1 {
+  display: flex;
+  justify-content: center;
 }

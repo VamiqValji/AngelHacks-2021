@@ -57,7 +57,7 @@ function App() {
               {/* <Link to="/room/">Room</Link> */}
             </li>
             <li>
-              <a href="https://github.com/VamiqValji/AngelHacks-2021"><i className="fab fa-github"></i> </a>
+              <a href="https://github.com/VamiqValji/AngelHacks-2021"><i className="fab fa-github githubLogo"></i> </a>
             </li>
             {allUsersNumber ? <div className="usersOnline">People Online: {allUsersNumber}</div> : ""}
           </ul>

@@ -51,13 +51,19 @@ const Room: React.FC<RoomProps> = ({}) => {
             console.log(username);
             setUserUsername(username);
         }
+
+        const maxCheck = () => {
+            if (inputUsernameRef.current?.value) {
+                inputUsernameRef.current.value = inputUsernameRef.current.value.slice(0,10);
+            }
+        } 
         
         return (
             <>
                 <div className="modalBackground">
                 <div className="modalContainer">
                     <h1>Please Enter Your Username To Join The Room</h1>
-                    <input ref={inputUsernameRef} placeholder="Enter your username..." type="text"/>
+                    <input onChange={maxCheck} ref={inputUsernameRef} placeholder="Enter your username..." type="text"/>
                     <button onClick={() => submitUsername(inputUsernameRef.current?.value)} >Submit</button>
                 </div>
                 </div>
@@ -409,10 +415,14 @@ const Room: React.FC<RoomProps> = ({}) => {
                 <div className="room">
                 {roomData.success === true ? (
                     <div>
-                        <h1>Room Name: {roomData.roomName}</h1>
-                    <input ref={linkRef} type="text" value={`${window.location.href}`} style={{width: 285}} />
-                        <button style={{marginTop:-20, fontSize:15}} className="left" onClick={copyToClipboard}>Copy Me!</button>
-                        <h1 className="center"><a href={currentVideo}>Current Video</a></h1>
+                        <span className="copyMe">
+                            <span className="sticky">
+                                <h1>Room Name: {roomData.roomName}</h1>
+                                <input ref={linkRef} type="text" value={`${window.location.href}`} style={{width: 245}} />
+                                <button style={{marginTop:-20, fontSize:15}} className="left" onClick={copyToClipboard}>Copy Me!</button>
+                            </span>
+                        </span>
+                        <h1 style={{marginTop:16}} className="center"><a href={currentVideo}>Current Video</a></h1>
                     {console.log(isPlaying)}
                     <div className="reactPlayerContainer">
                         {currentVideo ? (
@@ -442,10 +452,10 @@ const Room: React.FC<RoomProps> = ({}) => {
                         )}
 
                     </div>
-                    <input placeholder="Enter URL here..." type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
+                    <input placeholder="Enter URL here..." type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto", marginTop:8}}/>
                     <br></br>
                     <br></br>
-                    <button  style={{   display: "block", margin:"auto"}} onClick={ (e)=> {
+                    <button  style={{   display: "block", margin:"auto", marginTop:-30}} onClick={ (e)=> {
                         if (inputRef.current.value.length > 0) {
                             clicked()
                             inputRef.current.value = ""
@@ -455,6 +465,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                     <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>Click to Skip</button>
                     
                     <div className="queueContainer">
+                        <br/>
                         <h2 className="center">Queue:</h2>
                         {queue.length > 0 ? (
                             <ul className="center">
@@ -470,11 +481,11 @@ const Room: React.FC<RoomProps> = ({}) => {
                         )}
     
                     </div>
-    
+                    <br/>
+                    <h2 style={{marginTop:10}} className={"center"}>Upload Drawings To The Room!</h2>
+                    <br/>
                     <HuePicker color = {"#333"} onChangeComplete={(color)=>setColorBrush(color)} className="c"/>
-                    <button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.current.clear()}}>Clear</button>
-                    <br></br>
-                    <h2 className={"center"}>Draw Here To Your Friends!</h2>
+                    <button style={{display: "block", margin:"auto", marginTop:12, marginBottom:12}} onClick ={()=> {canvasRef.current.clear()}}>Clear</button>
                     
                     <CanvasDraw 
                         brushColor = {brush} 
@@ -482,14 +493,13 @@ const Room: React.FC<RoomProps> = ({}) => {
                         canvasHeight = {250} 
                         canvasWidth ={900} 
                         ref={canvasRef}
-                        
                         />
                         <br></br>
                         <button style={{display: "block", margin:"auto"}} onClick={()=>canvasChange()}>Upload!</button>
                     
-                        <h2 className={"center"}>Here Is What You And Your Friends Drew!</h2>
+                        <h2 style={{marginTop:10}} className={"center"}>Here Is What You And Your Friends Drew!</h2>
                     <CanvasDraw 
-                        style={{display: "block", margin:"auto"}} 
+                        style={{display: "block", margin:"auto", marginTop:5}} 
                         canvasHeight = {250} 
                         canvasWidth ={900} 
                         ref={canvasRefInc}
@@ -500,6 +510,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                     
                     <div className="container">
                     <div className="messagingContainer">
+                        <br/>
                         <h2>
                         Chat & Events
                         <div>
