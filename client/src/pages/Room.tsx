@@ -123,36 +123,43 @@ const Room: React.FC<RoomProps> = ({}) => {
     }
 
     return (
-        <div>
+        <div className="room">
            {roomData.success === true ? (
                <div>
-            <h1>Current Video: <a href={currentVideo}> </a> </h1>
+            <h1 style={{margin: 8, marginTop: 15}} className="center">Current Video: <a href={currentVideo}> </a> </h1>
             <ReactPlayer url={currentVideo} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} onSeek ={(sec)=>time(sec)} style={{ margin: "0 auto"}} width={888} height={500}/>
             <input type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
             <button  style={{   display: "block", margin:"auto"}} onClick={ (e)=> {
                 clicked()
                 inputRef.current.value = ""
                 setData("")} }>Enter The URL And Click Me!</button>
-            <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>click to skip</button>
+            <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>Click to Skip</button>
             
+            <div className="queueContainer">
+                <h2 className="center">Queue:</h2>
+                {queue.length > 0 ? (
+                    <ul className="center">
+                    {queue.map((number) =>
+                    <ListItem key={number.toString()}
+                    value={number} />
+                    )}
+                </ul>
+                ) : (
+                    <ul className="center">Nothing here!</ul>
+                )}
 
+            </div>
+
+            <h3 className="center">Personal Canvas</h3>
             <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef}/>
             {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
-            }<h2>Queue:</h2>
-            <ul>
-                {queue.map((number) =>
-                 <ListItem key={number.toString()}
-                value={number} />
-                )}
-            </ul>
+            }
             </div>
            ) : (
-            <div>
+            <div className="center">
                <h2>Invalid Room</h2>
             </div>
            ) } 
-
-            
         </div>
             
     )
