@@ -1,14 +1,5 @@
-chat across users
 deploy
-
-home page
-create page
-github in nav
-
 
 devpost
 script 
 video
-
-
-notes?

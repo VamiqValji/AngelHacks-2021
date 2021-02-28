@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
     // console.log("roomID", roomID);
 
     for (let i = 0; i < dataList.length; i++) {
-      console.log(`COMPARE: (${dataList[i].roomID})(${roomID})`);
+      // console.log(`COMPARE: (${dataList[i].roomID})(${roomID})`);
       if (dataList[i].roomID === roomID) {
         // if room id is correct
         socket.join(roomID);
