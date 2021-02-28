@@ -1,2 +1,10 @@
 chat across users
-notes
+deploy
+
+devpost
+script 
+video
+
+github in nav
+
+notes?

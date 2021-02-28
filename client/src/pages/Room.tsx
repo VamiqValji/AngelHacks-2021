@@ -34,6 +34,9 @@ const Room: React.FC<RoomProps> = ({}) => {
     const [userUsername, setUserUsername] = useState<String>("")
     const inputUsernameRef = useRef<HTMLInputElement>(null);
 
+    const chatArea = useRef<any>(null);
+    const inputChatArea = useRef<any>(null);
+
     const Modal = () => {
         
         const submitUsername = (username:any) => {
@@ -52,6 +55,21 @@ const Room: React.FC<RoomProps> = ({}) => {
                 </div>
             </>
         )
+    }
+
+    const sendMsgOREventToServer = () => {
+
+    }
+
+    const addMsgOREventToDom = () => {
+
+    }
+
+    const submitMessage = (e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (inputChatArea.current?.value.length <= 0) return;
+        console.log(inputChatArea.current?.value);
+        console.log(chatArea.current);
     }
 
     useEffect(() => {
@@ -219,6 +237,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     //     }
         
     // }
+
     const copyToClipboard = () => {
         linkRef.current.select();
         linkRef.current.setSelectionRange(0, 99999);
@@ -296,6 +315,37 @@ const Room: React.FC<RoomProps> = ({}) => {
                     <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef} brushColor ={colorBrush}/>
                     {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
                     }
+                    <div className="container">
+                    <div className="messagingContainer">
+                        <h2>
+                        Chat & Events
+                        <div>
+                        </div>
+                        </h2>
+                        <div className="messageAreaContainer">
+                        <div ref={chatArea} className="messageArea">
+                        <span id="you"><br/>messagemessagemessagemessagemessagemessagemessage</span>
+                                {[1,2,3,5,6,8,9].map((n) => {
+                                    return <span key={n} id="other"><br/>{n}</span>
+                                })}
+                        </div>
+                        </div>
+                        <div className="messageBoxContainer">
+                        <form onSubmit={(e) => submitMessage(e)} className="messageBox">
+                            <span>
+                            <input
+                                ref={inputChatArea}
+                                placeholder="Enter message here..."
+                                type="text"
+                                name="Message"
+                                id="msg"
+                            />
+                            <button>Send</button>
+                            </span>
+                        </form>
+                        </div>
+                        </div>
+                        </div>
                     </div>
                     
                 ) : (
