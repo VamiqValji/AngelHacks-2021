@@ -1,3 +1,5 @@
 chat across users
+MODAL for username prompt
+share this link to friends ON ROOM PAGE
 notes
 link sharing?

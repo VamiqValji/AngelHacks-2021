@@ -127,3 +127,63 @@ button:hover {
   list-style-type: none;
   text-decoration: none;
 }
+
+/* MODAL */
+
+.modalBackground {
+  z-index: 1;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100vh;
+}
+.modalContainer {
+  z-index: 2;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  padding: 1rem;
+  background: black;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.modalContainer h1 {
+  padding: 1.5rem;
+  margin: 1.5rem;
+  margin-bottom: 0rem;
+}
+.modalContainer input,
+.modalContainer button {
+  border-radius: 1rem;
+  padding: 1.5rem;
+  font-size: 1.3em;
+  margin: 1rem;
+}
+.modalContainer input {
+  background: whitesmoke;
+  color: black;
+  transition: 0.2s;
+  border: 0.1rem solid black;
+}
+.modalContainer input:focus,
+.modalContainer input:hover {
+  background: var(--red);
+  color: whitesmoke;
+  background: black;
+  border: 0.1rem white solid;
+}
+.modalContainer button {
+  background: var(--red);
+  transition: 0.2s;
+}
+.modalContainer button:hover {
+  background: whitesmoke;
+  color: black;
+}
+
+/* MODAL */
