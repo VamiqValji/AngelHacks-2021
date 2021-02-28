@@ -30,6 +30,10 @@ a:hover {
   
 }
 
+.watch {
+  color: var(--red);
+}
+
 /* MY CLASS SHORTCUTS*/
 
 .center {
