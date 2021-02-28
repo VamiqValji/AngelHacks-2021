@@ -97,6 +97,10 @@ io.on("connection", (socket) => {
 
   // console.log(dataList);
 
+  
+  socket.on("canvas", data => {
+    io.in(roomID).emit("changeCanvas", data);
+  })
   socket.on("play", (data) => {
     console.log("play");
     socket.to(roomID).broadcast.emit("playClient", data);
