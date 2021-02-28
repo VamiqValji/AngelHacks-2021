@@ -27,6 +27,7 @@ const io = require("socket.io")(server, {
 let allUsers = 0;
 
 let dataList = []; // users and rooms
+let currentUsers = [];
 
 dataList.push(
   {
@@ -45,11 +46,13 @@ dataList.push(
   }
 );
 
-const joinRoom = (roomName = String, socket) => {
-  console.log(roomName);
-  socket.join(roomName);
-};
-const publicRoom = "PublicRoom";
+// const joinRoom = (roomName = String, socket) => {
+//   console.log(roomName);
+//   socket.join(roomName);
+// };
+
+// const publicRoom = "PublicRoom";
+
 io.on("connection", (socket) => {
   //if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}/room`)) {
   // private room
@@ -82,6 +85,7 @@ io.on("connection", (socket) => {
           userID: socket.id,
           username: data.username,
         });
+
         inPrivRoom = true;
       }
       // else {
@@ -93,6 +97,11 @@ io.on("connection", (socket) => {
       //   }
       // }
     }
+
+    currentUsers.push({
+      userID: socket.id,
+      username: data.username,
+    });
   });
 
   // console.log(dataList);
@@ -143,31 +152,53 @@ io.on("connection", (socket) => {
       }
     }
   });
+  socket.on("sendMessage", (data) => {
+    console.log("sendMessage");
+    socket.to(roomID).broadcast.emit("receiveMessage", data);
+  });
+  socket.on("sendEvent", (data) => {
+    console.log(`sendEvent: ${data.event} from ${data.username}`);
+    io.in(roomID).emit("receiveEvent", data);
+  });
 
   allUsers++;
   // console.log(data);
   // socket.broadcast.emit("updatePublicPlayers", allUsers);
-  socket.on("disconnected", (data) => {
-    for (let i = 0; i < dataList.length; i++) {
-      try {
-        if (dataList[i].roomID === roomID) {
-          // if room id is correct
-          for (let i = 0; d < dataList[i].users.length; d++) {
-            if (dataList[i].users[d].userID === socketID) {
-              // if correct player
-              const index = dataList[i].users.indexOf(dataList[i].users[d]);
-              if (index > -1) {
-                dataList[i].users.splice(index, 1);
-              }
-            }
-          }
-        }
-      } catch (err) {
-        console.log(err);
+  socket.on("disconnect", (data) => {
+    // for (let i = 0; i < dataList.length; i++) {
+    //   try {
+    //     if (dataList[i].roomID === roomID) {
+    //       // if room id is correct
+    //       for (let i = 0; d < dataList[i].users.length; d++) {
+    //         if (dataList[i].users[d].userID === socketID) {
+    //           // if correct player
+    //           const index = dataList[i].users.indexOf(dataList[i].users[d]);
+    //           if (index > -1) {
+    //             dataList[i].users.splice(index, 1);
+    //           }
+    //         }
+    //       }
+    //     }
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // }
+
+    for (let i = 0; i < currentUsers.length; i++) {
+      let name = "";
+      if (currentUsers[i].userID === socket.id) {
+        name = currentUsers[i].username;
+      }
+      if (name.length > 0) {
+        socket.emit("receiveEvent", {
+          username: name,
+          event: "disconnected",
+        });
       }
     }
+
     allUsers--;
-    console.log("disconnect data", data);
+    console.log("disconnect", socket.id);
     // socket.broadcast.emit("updatePublicPlayers", allUsers);
   });
   //}

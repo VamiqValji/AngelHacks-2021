@@ -70,9 +70,9 @@ function App() {
           <Route path="/room/:roomID">
             <Room />
           </Route>
-          <Route path="/join/:roomID">
+          {/* <Route path="/join/:roomID">
             <Join />
-          </Route>
+          </Route> */}
         </Switch>
       </div>
     </Router>

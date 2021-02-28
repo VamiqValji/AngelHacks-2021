@@ -32,8 +32,11 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
-    const [userUsername, setUserUsername] = useState<String>("")
+    const [userUsername, setUserUsername] = useState<string>("")
     const inputUsernameRef = useRef<HTMLInputElement>(null);
+
+    const chatArea = useRef<any>(null);
+    const inputChatArea = useRef<any>(null);
 
     const Modal = () => {
         
@@ -54,6 +57,72 @@ const Room: React.FC<RoomProps> = ({}) => {
             </>
         )
     }
+
+    const MsgOrEventHandler = (message:string, msgOrEvent:"msg" | "event", username: string, who?:"you" | "other", event?:string) => {
+
+        const currentTime = new Date().toLocaleTimeString();
+        let span = document.createElement("div");
+        
+        let WHO;
+        if (who === "you") {
+            socket.emit("sendMessage", {
+                username: userUsername,
+                message: message,
+            });
+            WHO = "(You)";
+        } else if (who === "other") {
+            WHO = "";
+        }
+
+        let USERNAME;
+        if (username !== undefined || username !== userUsername) {
+            USERNAME = username;
+        } else {
+            USERNAME = userUsername;
+        }
+
+        if (msgOrEvent === "msg") {
+            span.innerHTML = `<span key={${message + Math.random()}} id=${who}><div><li>${USERNAME}<li class="who">${WHO}</li></li><li class="currentTime">${currentTime}</li></div>${message}</span>`;
+        } else if (msgOrEvent === "event") {
+            span.innerHTML = `<span style={{fontSize:25}}><b>${USERNAME}</b> ${event}.</span>`;
+        }
+        // document.getElementsByClassName("messageArea")[0].appendChild(span);
+        if (who === "you") {
+            inputChatArea.current.value = "";
+        }
+        // for (let i = 0; i < chatArea.current?.children.length; i++) {
+        //     if (chatArea.current?.children[i].value === `${USERNAME} ${event}.`) {
+        //         return;
+        //     }
+        // }
+        chatArea.current?.append(span);
+        chatArea.current?.scrollBy(0,chatArea.current?.scrollHeight);
+
+        // const sendMsgOREventToServer = () => {
+
+        // }
+    
+        // const addMsgOREventToDom = () => {
+    
+        // }
+    }
+
+    const submitMessage = (e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (inputChatArea.current?.value.length <= 0) return;
+        console.log(inputChatArea.current?.value);
+        console.log(chatArea.current);
+        MsgOrEventHandler(inputChatArea.current.value, "msg", userUsername, "you");
+        // MsgOrEventHandler("other test", "msg", userUsername, "other");
+        // MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "joined");
+        // MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "paused");
+    }
+
+    // socket.emit("sendEvent", {
+    //     username: userUsername,
+    //     event: "event",
+    // });
+
     useEffect(() => {
         socket = io(ENDPOINT);
         // console.log("connected", roomID);
@@ -61,6 +130,10 @@ const Room: React.FC<RoomProps> = ({}) => {
             roomID: roomID,
             username: userUsername
         });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "joined the room"
+        // });
 
         socket.on("connectedResponse", (res) => {
             console.log("CONNECTED RES",res);
@@ -93,6 +166,10 @@ const Room: React.FC<RoomProps> = ({}) => {
             setQueue(data.queue);
         })
 
+        socket.on("receiveMessage", (data) => {
+            MsgOrEventHandler(data.message, "msg", data.username, "other");
+        })
+
         socket.on("nextVideoClient", (data) => {
             //console.log("nextVideoClient", data);
             let temp = data.queue;
@@ -101,10 +178,28 @@ const Room: React.FC<RoomProps> = ({}) => {
             setQueue(temp);
         })
 
+        socket.on("receiveEvent", (data) => {
+            let whoArg;
+
+            if (data.username === userUsername) {
+                whoArg = "you";
+            } else {
+                whoArg = "other"
+            }
+
+            // MsgOrEventHandler("","event",data.username, whoArg, data.event);
+            MsgOrEventHandler("test", "event", userUsername, "other", "joined");
+
+        })
+
         return () => {
-          socket.emit("disconnected", {
-            username: userUsername,
-          });
+        //   socket.emit("disconnected", {
+        //     username: userUsername,
+        //   });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "left the room"
+        // });
           socket.disconnect();
           socket.off();
         }
@@ -123,6 +218,10 @@ const Room: React.FC<RoomProps> = ({}) => {
                 username: userUsername,
                 queue: temps
             });
+            // socket.emit("sendEvent", {
+            //     username: userUsername,
+            //     event: "skipped"
+            // });
         }
     }
 
@@ -131,6 +230,10 @@ const Room: React.FC<RoomProps> = ({}) => {
             username: userUsername,
             currentTime: videoRef.current.getCurrentTime()
         });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "changed the timestamp"
+        // });
     }
 
     const start = () => {
@@ -138,6 +241,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.emit("play", {
             username: userUsername,
         });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "started the video"
+        // });
         setIsPlaying(true);
         // isPlaying = true;
         // alert(isPlaying)
@@ -148,6 +255,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.emit("pause", {
             username: userUsername,
         });
+        // socket.emit("sendEvent", {
+        //     username: userUsername,
+        //     event: "paused the video"
+        // });
         // isPlaying = false;
         setIsPlaying(false);
         // alert(isPlaying)
@@ -184,6 +295,10 @@ const Room: React.FC<RoomProps> = ({}) => {
                     queue: temp,
                     username: userUsername,
                 });
+                // socket.emit("sendEvent", {
+                //     username: userUsername,
+                //     event: "updated the queue"
+                // });
             } else {
                 alert("Cannot Play that. Please Try Another URL")
             }
@@ -347,6 +462,37 @@ const Room: React.FC<RoomProps> = ({}) => {
                         disabled={true}
                     
                     />
+                    <div className="container">
+                    <div className="messagingContainer">
+                        <h2>
+                        Chat & Events
+                        <div>
+                        </div>
+                        </h2>
+                        <div className="messageAreaContainer">
+                        <div ref={chatArea} className="messageArea">
+                        {/* <span id="you"><br/>messagemessagemessagemessagemessagemessagemessage</span>
+                                {[1,2,3,5,6,8,9].map((n) => {
+                                    return <span key={n} id="other"><br/>{n}</span>
+                                })} */}
+                        </div>
+                        </div>
+                        <div className="messageBoxContainer">
+                        <form onSubmit={(e) => submitMessage(e)} className="messageBox">
+                            <span>
+                            <input
+                                ref={inputChatArea}
+                                placeholder="Enter message here..."
+                                type="text"
+                                name="Message"
+                                id="msg"
+                            />
+                            <button>Send</button>
+                            </span>
+                        </form>
+                        </div>
+                        </div>
+                        </div>
                     </div>
                     
                 ) : (
@@ -358,7 +504,14 @@ const Room: React.FC<RoomProps> = ({}) => {
                 </> 
             )
     } else {
-        return <Modal />
+        return (
+            <>{roomData.success === true ? (<Modal />) : (
+            <div style={{marginTop:20}}className="center">
+            <h2>Invalid Room</h2>
+            </div>
+            )}
+        </>
+        )
     }
 
 }
