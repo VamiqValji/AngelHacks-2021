@@ -5,6 +5,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
+  color: whitesmoke;
 }
 
 :root {
@@ -30,6 +31,14 @@ a:hover {
 .center {
   display: flex;
   justify-content: center;
+}
+.c {
+  margin: 0 auto;
+}
+h1,
+h2,
+h3 {
+  color: white;
 }
 
 /* MY CLASS SHORTCUTS*/
@@ -98,4 +107,15 @@ button {
 }
 button:hover {
   background: var(--red);
+}
+
+.queueContainer h2 {
+  margin-top: 1rem;
+}
+.queueContainer ul {
+  padding: 1rem;
+  border: 0.2rem solid rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  width: 50vw;
+  margin: 1rem auto;
 }

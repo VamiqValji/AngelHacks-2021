@@ -130,7 +130,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     const [colorBrush,setColorBrush] = useState(String);
 
     return (
-        <div>
+        <div className="room">
            {roomData.success === true ? (
                <div>
                    <SketchPicker />
@@ -159,26 +159,32 @@ const Room: React.FC<RoomProps> = ({}) => {
                 clicked()
                 inputRef.current.value = ""
                 setData("")} }>Enter The URL And Click Me!</button>
-            <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>click to skip</button>
+            <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>Click to Skip</button>
             
+            <div className="queueContainer">
+                <h2 className="center">Queue:</h2>
+                {queue.length > 0 ? (
+                    <ul className="center">
+                    {queue.map((number) =>
+                    <ListItem key={number.toString()}
+                    value={number} />
+                    )}
+                </ul>
+                ) : (
+                    <ul className="center">Nothing here!</ul>
+                )}
+
+            </div>
 
             <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef} brushColor ={colorBrush}/>
             {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
-            }<h2>Queue:</h2>
-            <ul>
-                {queue.map((number) =>
-                 <ListItem key={number.toString()}
-                value={number} />
-                )}
-            </ul>
+            }
             </div>
            ) : (
-            <div>
+            <div className="center">
                <h2>Invalid Room</h2>
             </div>
            ) } 
-
-            
         </div>
             
     )
