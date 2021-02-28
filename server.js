@@ -33,11 +33,15 @@ dataList.push(
     roomName: "test",
     roomID: "test",
     users: [],
+    queue: [],
+    duration: "",
   },
   {
     roomName: "test2",
     roomID: "test2",
     users: [],
+    queue: [],
+    duration: "",
   }
 );
 
@@ -48,59 +52,88 @@ const joinRoom = (roomName = String, socket) => {
 const publicRoom = "PublicRoom";
 io.on("connection", (socket) => {
   //if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}/room`)) {
-    // private room
-    let inPrivRoom = false;
-    let roomID;
-    socket.on("connected", (data) => {
-      console.log("priv");
-      // socket.join("priv");
-      roomID = data;
+  // private room
+  let inPrivRoom = false;
+  let roomID;
+  socket.on("connected", (data) => {
+    console.log("priv");
+    // socket.join("priv");
+    roomID = data;
 
-      console.log("roomIDBEFORE", data);
-      console.log("roomID", roomID);
+    console.log("roomIDBEFORE", data);
+    console.log("roomID", roomID);
 
-      for (let i = 0; i < dataList.length; i++) {
-        if (dataList[i].roomID === roomID) {
-          // if room id is correct
-          socket.join(roomID);
-          console.log("correct id");
+    for (let i = 0; i < dataList.length; i++) {
+      if (dataList[i].roomID === roomID) {
+        // if room id is correct
+        socket.join(roomID);
+        console.log("correct id");
+        // dataList[i].queue = data.queue;
+        socket.emit("connectedResponse", {
+          success: true,
+          roomID: roomID,
+          roomName: dataList[i].roomName,
+          dataList: dataList[i],
+        });
+
+        dataList[i].users.push({
+          userID: socket.id,
+          username: "test",
+        });
+        inPrivRoom = true;
+      } else {
+        if (!inPrivRoom) {
           socket.emit("connectedResponse", {
-            success: true,
-            roomID: roomID,
-            roomName: dataList[i].roomName,
+            success: false,
           });
-          dataList[i].users.push(socket.id);
-          inPrivRoom = true;
-        } else {
-          if (!inPrivRoom) {
-            socket.emit("connectedResponse", {
-              success: false,
-            });
-            inPrivRoom = false;
-          }
+          inPrivRoom = false;
         }
       }
-    });
+    }
+  });
 
-    console.log(dataList);
+  console.log(dataList);
 
-    socket.on("play", (data) => {
-      console.log("play");
-      socket.to(roomID).broadcast.emit("playClient", data);
-    });
-    socket.on("pause", (data) => {
-      console.log("pause");
-      socket.to(roomID).broadcast.emit("pauseClient", data);
-    });
+  socket.on("play", (data) => {
+    console.log("play");
+    socket.to(roomID).broadcast.emit("playClient", data);
+  });
+  socket.on("pause", (data) => {
+    console.log("pause");
+    socket.to(roomID).broadcast.emit("pauseClient", data);
+  });
+  socket.on("updateQueue", (data) => {
+    for (let i = 0; i < dataList.length; i++) {
+      if (dataList[i].roomID === roomID) {
+        dataList[i].queue = data.queue;
+        console.log("updateQueue", "CURRENT QUEUE:", dataList[i].queue);
+      }
+    }
+    console.log(data);
+    socket.to(roomID).broadcast.emit("updateQueueClient", data);
+  });
+  socket.on("nextVideo", (data) => {
+    console.log("nextVideo");
+    socket.to(roomID).broadcast.emit("nextVideoClient", data);
+  });
 
-    allUsers++;
-    // console.log(data);
+  allUsers++;
+  // console.log(data);
+  // socket.broadcast.emit("updatePublicPlayers", allUsers);
+  socket.on("disconnected", (data) => {
+    for (let i = 0; i < dataList.length; i++) {
+      if (dataList[i].roomID === roomID) {
+        // if room id is correct
+        const index = dataList[i].users.indexOf(socket.id);
+        if (index > -1) {
+          dataList[i].users.splice(index, 1);
+        }
+      }
+    }
+    allUsers--;
+    console.log(data);
     // socket.broadcast.emit("updatePublicPlayers", allUsers);
-    socket.on("disconnected", (data) => {
-      allUsers--;
-      console.log(data);
-      // socket.broadcast.emit("updatePublicPlayers", allUsers);
-    });
+  });
   //}
   // if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}`))
   /*
@@ -148,6 +181,8 @@ app.post("/create", (req, res) => {
     roomName: req.body.roomName,
     roomID: random,
     users: [req.body.name],
+    queue: [],
+    duration: "",
   });
 
   return res
