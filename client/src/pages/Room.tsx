@@ -6,7 +6,8 @@ import {
     useParams,
 } from "react-router-dom";
 import io from "socket.io-client";
-import { SketchPicker } from 'react-color';
+import { HuePicker } from 'react-color';
+import { compress, decompress  } from 'lz-string'
 
 interface RoomProps {}
 
@@ -22,6 +23,8 @@ const Room: React.FC<RoomProps> = ({}) => {
     console.log(roomID);
     roomID = roomID.roomID;
 
+    const [brush, setBrush] = useState(String);
+
     const [roomData, setRoomData] = useState<any>({});
 
     const [currentVideo, setCurrentVideo] = useState<string>("");
@@ -35,6 +38,8 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const chatArea = useRef<any>(null);
     const inputChatArea = useRef<any>(null);
+    var canvasRef = useRef<any>(null);
+    var canvasRefInc = useRef<any>(null);
 
     const [count, setCount] = useState<number>(0);
     const [duration, setDuration] = useState<any>("");
@@ -125,6 +130,8 @@ const Room: React.FC<RoomProps> = ({}) => {
     //     event: "event",
     // });
 
+    
+
     useEffect(() => {
         socket = io(ENDPOINT);
         // console.log("connected", roomID);
@@ -137,6 +144,13 @@ const Room: React.FC<RoomProps> = ({}) => {
         //     event: "joined the room"
         // });
 
+        socket.on("changeCanvas", data => {
+            canvasRefInc.current.clear()
+            canvasRefInc.current.loadSaveData(decompress(data.info))
+        })
+
+        socket.emit("getUsers", (data) => {})
+
         socket.on("connectedResponse", (res) => {
             console.log("CONNECTED RES",res);
             setRoomData(res);
@@ -145,7 +159,7 @@ const Room: React.FC<RoomProps> = ({}) => {
             setDuration(res.duration);
         })
         
-        socket.on("changeTime", data => {
+        socket.on("changeTime", (data) => {
             videoRef.current.seekTo(data.currentTime, 'seconds')
         })
     
@@ -235,6 +249,31 @@ const Room: React.FC<RoomProps> = ({}) => {
         }
     }
 
+    const setColorBrush = (color) => {
+        console.log(color)
+        setBrush(color.hex);
+    }
+
+    let oldData = " ";
+    let cmprsedData = "";
+    const [checkCanvas, setCheckCanvas] = useState(false);
+
+    const canvasChange = () => {
+            let saveData = canvasRef.current.getSaveData();
+            if(saveData != oldData) {
+                //console.log("saved", saveData, "and old", oldData)
+                oldData = saveData;
+                cmprsedData = compress(saveData)
+                socket.emit("canvas", {
+                    username: userUsername,
+                    info: cmprsedData
+                })
+            }
+            canvasRef.current.clear()
+    }
+
+    
+
     const handleTime = () => {
         socket.emit("time", {
             username: userUsername,
@@ -303,7 +342,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         
     }
 
-    var canvasRef = useRef<any>(null);
 
     function clicked() {
         if(data != "") {
@@ -342,8 +380,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         }
     }
 
-    const [colorBrush,setColorBrush] = useState(String);
-    const [currentTime, setCurrentTime] = useState(Number)
     const linkRef = useRef<any>(null);
     //videoRef.current.seekTo(videoRef.current.getCurrentTime(), 'seconds')
 
@@ -363,6 +399,8 @@ const Room: React.FC<RoomProps> = ({}) => {
         linkRef.current.setSelectionRange(0, 99999);
         document.execCommand("copy");
     }
+
+
     
     if (userUsername.length > 0) {
         return (
@@ -372,8 +410,9 @@ const Room: React.FC<RoomProps> = ({}) => {
                 {roomData.success === true ? (
                     <div>
                         <h1>Room Name: {roomData.roomName}</h1>
-                        <SketchPicker />
-                    <h1 >Current Video: <a href={currentVideo}> </a> </h1>
+                    <input ref={linkRef} type="text" value={`${window.location.href}`} style={{width: 285}} />
+                        <button style={{marginTop:-20, fontSize:15}} className="left" onClick={copyToClipboard}>Copy Me!</button>
+                        <h1 className="center"><a href={currentVideo}>Current Video</a></h1>
                     {console.log(isPlaying)}
                     <div className="reactPlayerContainer">
                         {currentVideo ? (
@@ -432,9 +471,33 @@ const Room: React.FC<RoomProps> = ({}) => {
     
                     </div>
     
-                    <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef} brushColor ={colorBrush}/>
-                    {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
-                    }
+                    <HuePicker color = {"#333"} onChangeComplete={(color)=>setColorBrush(color)} className="c"/>
+                    <button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.current.clear()}}>Clear</button>
+                    <br></br>
+                    <h2 className={"center"}>Draw Here To Your Friends!</h2>
+                    
+                    <CanvasDraw 
+                        brushColor = {brush} 
+                        style={{display: "block", margin:"auto"}} 
+                        canvasHeight = {250} 
+                        canvasWidth ={900} 
+                        ref={canvasRef}
+                        
+                        />
+                        <br></br>
+                        <button style={{display: "block", margin:"auto"}} onClick={()=>canvasChange()}>Upload!</button>
+                    
+                        <h2 className={"center"}>Here Is What You And Your Friends Drew!</h2>
+                    <CanvasDraw 
+                        style={{display: "block", margin:"auto"}} 
+                        canvasHeight = {250} 
+                        canvasWidth ={900} 
+                        ref={canvasRefInc}
+                        hideGrid={true}
+                        disabled={true}
+                    
+                    />
+                    
                     <div className="container">
                     <div className="messagingContainer">
                         <h2>
