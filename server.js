@@ -47,7 +47,7 @@ const joinRoom = (roomName = String, socket) => {
 };
 const publicRoom = "PublicRoom";
 io.on("connection", (socket) => {
-  if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}/room`)) {
+  //if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}/room`)) {
     // private room
     let inPrivRoom = false;
     let roomID;
@@ -101,8 +101,9 @@ io.on("connection", (socket) => {
       console.log(data);
       // socket.broadcast.emit("updatePublicPlayers", allUsers);
     });
-  }
+  //}
   // if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}`))
+  /*
   else {
     // public
     console.log("pub");
@@ -122,7 +123,7 @@ io.on("connection", (socket) => {
       console.log("dd");
       // socket.broadcast.emit("updatePublicPlayers", allUsers);
     });
-  }
+  } */
 });
 
 app.get("/", (req, res) => {
