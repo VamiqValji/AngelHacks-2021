@@ -116,6 +116,14 @@ button:hover {
   padding: 1rem;
   border: 0.2rem solid rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
-  width: 50vw;
+  width: 50rem;
   margin: 1rem auto;
+  display: flex;
+  flex-direction: column;
+}
+.queueContainer ul li {
+  margin: 0.3rem auto;
+  color: whitesmoke;
+  list-style-type: none;
+  text-decoration: none;
 }
