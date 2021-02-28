@@ -5,7 +5,7 @@ import {
     useParams,
 } from "react-router-dom";
 import io from "socket.io-client";
-import { SketchPicker } from 'react-color'
+import { SketchPicker } from 'react-color';
 
 interface RoomProps {}
 
