@@ -5,6 +5,7 @@ import {
     useParams,
 } from "react-router-dom";
 import io from "socket.io-client";
+import { SketchPicker } from 'react-color'
 
 interface RoomProps {}
 
@@ -33,7 +34,7 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [queue, setQueue] = useState<string[]>([]);
 
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
     useEffect(() => {
         socket = io(ENDPOINT);
@@ -89,6 +90,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         // alert(isPlaying)
     }
 
+    const videoStarted = () => {
+        setIsPlaying(false);
+    }
+
     const time = (sec:any) => {
         alert(sec);
     }
@@ -122,13 +127,34 @@ const Room: React.FC<RoomProps> = ({}) => {
         )
     }
 
+    const [colorBrush,setColorBrush] = useState(String);
+
     return (
         <div>
            {roomData.success === true ? (
                <div>
+                   <SketchPicker />
             <h1>Current Video: <a href={currentVideo}> </a> </h1>
-            <ReactPlayer url={currentVideo} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} onSeek ={(sec)=>time(sec)} style={{ margin: "0 auto"}} width={888} height={500}/>
+            <ReactPlayer 
+                url={currentVideo} 
+                controls={true} 
+                volume={0.5} 
+                onStart={videoStarted}
+                onPlay={start} 
+                onPause={pause} 
+                onEnded={nextVideo} 
+                playing = {isPlaying} 
+                onProgress ={(played)=>time(played)} 
+                style={
+                    { margin: "0 auto"}
+                } 
+                width={888} 
+                height={500}
+                    />
+
             <input type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
+            <br></br>
+            <br></br>
             <button  style={{   display: "block", margin:"auto"}} onClick={ (e)=> {
                 clicked()
                 inputRef.current.value = ""
@@ -136,7 +162,7 @@ const Room: React.FC<RoomProps> = ({}) => {
             <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>click to skip</button>
             
 
-            <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef}/>
+            <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef} brushColor ={colorBrush}/>
             {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
             }<h2>Queue:</h2>
             <ul>
