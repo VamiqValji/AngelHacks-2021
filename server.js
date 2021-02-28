@@ -45,7 +45,9 @@ io.on("connection", (socket) => {
     let room = "";
     socket.on("connected", (data) => {
       console.log("priv");
-      socket.join("priv");
+      // socket.join("priv");
+
+      let inPrivRoom = false;
 
       let roomID = data;
       console.log("roomID", roomID);
@@ -60,11 +62,23 @@ io.on("connection", (socket) => {
             roomID: roomID,
             roomName: dataList[i].roomName,
           });
+          inPrivRoom = true;
         } else {
           socket.emit("connectedResponse", {
             success: false,
           });
         }
+      }
+
+      if (inPrivRoom) {
+        socket.on("play", (data) => {
+          console.log("play");
+          socket.to(roomID).broadcast.emit("playClient", data);
+        });
+        socket.on("pause", (data) => {
+          console.log("pause");
+          socket.to(roomID).broadcast.emit("pauseClient", data);
+        });
       }
 
       allUsers++;

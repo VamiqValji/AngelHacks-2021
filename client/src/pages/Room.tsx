@@ -31,9 +31,15 @@ const Room: React.FC<RoomProps> = ({}) => {
             setRoomData(res);
         })
     
-        socket.on("updatePublicPlayers", (allUsers) => {
-          console.log(allUsers);
+        socket.on("playClient", (data) => {
+        //   console.log(data);
+            setIsPlaying(true);
         })
+
+        socket.on("pauseClient", (data) => {
+            // console.log(data);
+            setIsPlaying(false);
+          })
     
         return () => {
           socket.emit("disconnected", "disconnected");
@@ -54,15 +60,17 @@ const Room: React.FC<RoomProps> = ({}) => {
     var newVideo = "https://www.youtube.com/watch?v=Rq5SEhs9lws"
 
     const start = () => {
+        socket.emit("play"/*, "username"*/);
         setIsPlaying(true);
         // isPlaying = true;
-        alert(isPlaying)
+        // alert(isPlaying)
     }
     
     const pause = () => {
+        socket.emit("pause"/*, "username"*/);
         // isPlaying = false;
         setIsPlaying(false);
-        alert(isPlaying)
+        // alert(isPlaying)
     }
 
     const [video, setVideo] = useState("https://youtu.be/e91M0XLX7Jw")
@@ -77,10 +85,11 @@ const Room: React.FC<RoomProps> = ({}) => {
     return (
         <>
         {roomData.success === true ? (
-                    <div>
-                        <h2>Room: {roomData.roomName} </h2>
-                        <ReactPlayer url={video} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} />
-                    </div>
+            <div>
+                <h2>Room: {roomData.roomName} </h2>
+                <div>{isPlaying ? "Playing" : "Not Playing"}</div>
+                <ReactPlayer url={video} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} />
+            </div>
         ) : (
             <div>
                 <h2>Invalid Room</h2>
