@@ -172,6 +172,11 @@ const Room: React.FC<RoomProps> = ({}) => {
             setQueue(temp);
         })
 
+        socket.on("userJoined", (data) => {
+            console.log("userJoined", data);
+            MsgOrEventHandler("", "event", data.username, "other", "joined");
+        })
+
         socket.on("receiveEvent", (data) => {
             let whoArg;
 

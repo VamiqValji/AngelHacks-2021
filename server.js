@@ -80,6 +80,15 @@ io.on("connection", (socket) => {
           roomName: dataList[i].roomName,
           dataList: dataList[i],
         });
+        try {
+          if (data.username.length > 0) {
+            socket.to(roomID).broadcast.emit("userJoined", {
+              username: data.username,
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
 
         dataList[i].users.push({
           userID: socket.id,
