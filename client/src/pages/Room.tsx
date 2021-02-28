@@ -27,7 +27,7 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [currentVideo, setCurrentVideo] = useState<string>("");
 
-    const [queue, setQueue] = useState<string[]>([]);
+    const [queue, setQueue] = useState<string[]>([""]);
 
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
@@ -64,9 +64,11 @@ const Room: React.FC<RoomProps> = ({}) => {
         })
 
         socket.on("nextVideoClient", (data) => {
-            console.log("nextVideoClient", data);
-            setQueue(data.queue);
-            setCurrentVideo(data.queue[0]);
+            //console.log("nextVideoClient", data);
+            let temp = data.queue;
+            setCurrentVideo(temp[0]);
+            temp.shift()
+            setQueue(temp);
         })
 
         return () => {
@@ -79,21 +81,19 @@ const Room: React.FC<RoomProps> = ({}) => {
     useEffect(() => {
         //setQueue((prev) => [...prev,"https://www.youtube.com/watch?v=iv8rSLsi1xo&ab_channel=AnsonAlexander"]);
         setCurrentVideo("https://www.youtube.com/watch?app=desktop&feature=share&v=ZbZSe6N_BXs");
+        //setQueue((prev) => [...prev, "yeet"]);
     }, [setQueue, setCurrentVideo])
 
     function nextVideo() {
         let temps = queue;
-        console.log("before",temps);
-        let i = temps.shift();
-        if (i !== undefined) {
+        if(temps[0] !== undefined || temps.length > 0) {
             socket.emit("nextVideo", {
-                username: "test",
-                queue: temps
-            });
-            console.log("after", temps);
-            setQueue(temps);
-            setCurrentVideo(temps[0]);
-        }
+            username: "test",
+            queue: temps
+        });
+    }
+
+            
     }
 
     const handleTime = () => {
@@ -153,6 +153,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                 alert("Cannot Play that. Please Try Another URL")
             }
         }
+
     }
 
     function ListItem(props:any) {
@@ -174,6 +175,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     const [colorBrush,setColorBrush] = useState(String);
     const [currentTime, setCurrentTime] = useState(Number)
     const [userUsername, setUserUsername] = useState<String>("")
+    const linkRef = useRef<any>(null);
     //videoRef.current.seekTo(videoRef.current.getCurrentTime(), 'seconds')
 
     // while(userUsername.length <= 0) {
@@ -186,16 +188,25 @@ const Room: React.FC<RoomProps> = ({}) => {
     //     }
         
     // }
-    
+    const copyToClipboard = () => {
+        linkRef.current.select();
+        linkRef.current.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+    }
 
     return (
     <body>
         <div className="room">
            {roomData.success === true ? (
                <div>
-                   <SketchPicker />
-            <h1 >Current Video: <a href={currentVideo}> </a> </h1>
+                   <h2>Room Link:</h2>
+                   <input ref={linkRef} type="text" value={`${window.location.href}`} style={{width: 285}} />
+                   <button style={{marginTop:-20, fontSize:15}} className="left" onClick={copyToClipboard}>Copy Me!</button>
+            <h1 className="center"><a href={currentVideo}>Current Video</a></h1>
             {console.log(isPlaying)}
+            <svg width="400" height="180">
+                <rect x="50" y="20" width="150" height="150" style={{  fill:'gray', opacity:0.5     }} />
+            </svg>
             <ReactPlayer 
                 ref = {videoRef}
                 url={currentVideo} 
@@ -232,7 +243,7 @@ const Room: React.FC<RoomProps> = ({}) => {
             
             <div className="queueContainer">
                 <h2 className="center">Queue:</h2>
-                {queue.length > 0 ? (
+                {queue.length >= 0 ? (
                     <ul className="center">
                     {queue.map((number) =>
                         <ListItem key={number.toString() + Math.random()}
@@ -240,8 +251,8 @@ const Room: React.FC<RoomProps> = ({}) => {
                     )}
                 </ul>
                 ) : (
-                    <ul className="center">
-                        <li>Nothing here!</li>
+                    <ul className = "center">
+                        <li>sdfsd</li>
                     </ul>
                 )}
 
