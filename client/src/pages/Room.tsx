@@ -2,15 +2,13 @@ import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import ReactPlayer from 'react-player/youtube'
 import CanvasDraw from "react-canvas-draw";
-import { useParams } from "react-router-dom";
+import {
+    useParams,
+} from "react-router-dom";
 import io from "socket.io-client";
-import { HuePicker } from 'react-color';
-import { compress, decompress  } from 'lz-string'
-import { O_DIRECT } from 'constants';
-
+import { SketchPicker } from 'react-color';
 
 interface RoomProps {}
-
 
 let socket;
 
@@ -37,6 +35,10 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const chatArea = useRef<any>(null);
     const inputChatArea = useRef<any>(null);
+
+    const [count, setCount] = useState<number>(0);
+    const [duration, setDuration] = useState<any>("");
+    const [seekTime,setSeekTime] = useState(0);
 
     const Modal = () => {
         
@@ -84,7 +86,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         if (msgOrEvent === "msg") {
             span.innerHTML = `<span key={${message + Math.random()}} id=${who}><div><li>${USERNAME}<li class="who">${WHO}</li></li><li class="currentTime">${currentTime}</li></div>${message}</span>`;
         } else if (msgOrEvent === "event") {
-            span.innerHTML = `<span style={{fontSize:25}}><b>${USERNAME}</b> ${event}.</span>`;
+            span.innerHTML = `<span style={{fontSize:25}}><b>${USERNAME}</b> ${event}.<li class="currentTime">${currentTime}</li></span>`;
         }
         // document.getElementsByClassName("messageArea")[0].appendChild(span);
         if (who === "you") {
@@ -140,25 +142,23 @@ const Room: React.FC<RoomProps> = ({}) => {
             setRoomData(res);
             console.log("connectRes:res.dataList.queue", res.dataList.queue)
             setQueue(res.dataList.queue);
+            setDuration(res.duration);
         })
         
         socket.on("changeTime", data => {
             videoRef.current.seekTo(data.currentTime, 'seconds')
         })
-
-        socket.on("changeCanvas", data => {
-            canvasRefInc.current.clear()
-            canvasRefInc.current.loadSaveData(decompress(data.info))
-        })
     
         socket.on("playClient", (data) => {
         //   console.log(data);
             setIsPlaying(true);
+            MsgOrEventHandler("", "event", data.username, "other", "hit play");
         })
 
         socket.on("pauseClient", (data) => {
             // console.log(data);
             setIsPlaying(false);
+            MsgOrEventHandler("", "event", data.username, "other", "hit pause");
         })
     
         socket.on("updateQueueClient", (data) => {
@@ -178,24 +178,34 @@ const Room: React.FC<RoomProps> = ({}) => {
             setQueue(temp);
         })
 
-        socket.on("receiveEvent", (data) => {
-            let whoArg;
-
-            if (data.username === userUsername) {
-                whoArg = "you";
-            } else {
-                whoArg = "other"
-            }
-
-            // MsgOrEventHandler("","event",data.username, whoArg, data.event);
-            MsgOrEventHandler("test", "event", userUsername, "other", "joined");
-
+        socket.on("userDisconnected", (data) => {
+            console.log("userDisconnected", data);
+            MsgOrEventHandler("", "event", data.username, "other", "left");
         })
 
+        socket.on("userJoined", (data) => {
+            console.log("userJoined", data);
+            MsgOrEventHandler("", "event", data.username, "other", "joined");
+        })
+
+        // socket.on("receiveEvent", (data) => {
+        //     let whoArg;
+
+        //     if (data.username === userUsername) {
+        //         whoArg = "you";
+        //     } else {
+        //         whoArg = "other"
+        //     }
+
+        //     // MsgOrEventHandler("","event",data.username, whoArg, data.event);
+        //     MsgOrEventHandler("test", "event", userUsername, "other", "joined");
+
+        // })
+
         return () => {
-        //   socket.emit("disconnected", {
-        //     username: userUsername,
-        //   });
+          socket.emit("disconnected", {
+            username: userUsername,
+          });
         // socket.emit("sendEvent", {
         //     username: userUsername,
         //     event: "left the room"
@@ -238,29 +248,38 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const start = () => {
         //
-        socket.emit("play", {
-            username: userUsername,
-        });
+        if (count > 2) {
+            socket.emit("play", {
+                username: userUsername,
+            });
+            setIsPlaying(true);
+        }
+        setCount(count + 1);
+
         // socket.emit("sendEvent", {
         //     username: userUsername,
         //     event: "started the video"
         // });
-        setIsPlaying(true);
         // isPlaying = true;
         // alert(isPlaying)
     }
     
     const pause = () => {
         //videoRef.current.seekTo(currentTime, 'seconds')
-        socket.emit("pause", {
-            username: userUsername,
-        });
+        if (count > 2) {
+            socket.emit("pause", {
+                username: userUsername,
+            });
+            setIsPlaying(false);
+    
+            setCount(count + 1);
+        }
+
         // socket.emit("sendEvent", {
         //     username: userUsername,
         //     event: "paused the video"
         // });
         // isPlaying = false;
-        setIsPlaying(false);
         // alert(isPlaying)
     }
 
@@ -271,21 +290,23 @@ const Room: React.FC<RoomProps> = ({}) => {
         videoRef.current.muted=false;
     }
 
+    const time = (sec:any) => {
+        //alert(sec);
+    }
 
     const [data,setData] = useState(String);
     function getData(val:any) {
         
-        if(val !== "") { 
+        if(val != "") { 
              setData(val)
         }
         
     }
 
     var canvasRef = useRef<any>(null);
-    var canvasRefInc = useRef<any>(null);
 
     function clicked() {
-        if(data !== "") {
+        if(data != "") {
             if (ReactPlayer.canPlay(data)) {
                 // setQueue((prev) => [...prev, data]);
                 // console.log("queue", queue);
@@ -311,7 +332,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         <li>{props.value}</li>
         )
     }
-    const [seekTime ,setSeekTime] = useState(0);
     function handleSeeking(seconds) {
         console.log(seekTime)                       //9                    //15
         if(seconds.playedSeconds - seekTime > 2 || seconds.playedSeconds - seekTime < -2) {
@@ -322,6 +342,8 @@ const Room: React.FC<RoomProps> = ({}) => {
         }
     }
 
+    const [colorBrush,setColorBrush] = useState(String);
+    const [currentTime, setCurrentTime] = useState(Number)
     const linkRef = useRef<any>(null);
     //videoRef.current.seekTo(videoRef.current.getCurrentTime(), 'seconds')
 
@@ -335,39 +357,14 @@ const Room: React.FC<RoomProps> = ({}) => {
     //     }
         
     // }
-    const [brush, setBrush] = useState(String);
-    
-    const setColorBrush = (color) => {
-        console.log(color)
-        setBrush(color.hex);
-    }
 
     const copyToClipboard = () => {
         linkRef.current.select();
         linkRef.current.setSelectionRange(0, 99999);
         document.execCommand("copy");
     }
-
-    let oldData = " ";
-    let cmprsedData = "";
-    const [checkCanvas, setCheckCanvas] = useState(false);
-
-    const canvasChange = () => {
-            let saveData = canvasRef.current.getSaveData();
-            if(saveData != oldData) {
-                //console.log("saved", saveData, "and old", oldData)
-                oldData = saveData;
-                cmprsedData = compress(saveData)
-                socket.emit("canvas", {
-                    username: userUsername,
-                    info: cmprsedData
-                })
-            }
-    }
-
     
     if (userUsername.length > 0) {
-        
         return (
             <>
                 {/* <body> */}
@@ -375,10 +372,8 @@ const Room: React.FC<RoomProps> = ({}) => {
                 {roomData.success === true ? (
                     <div>
                         <h1>Room Name: {roomData.roomName}</h1>
-                        <input ref={linkRef} type="text" value={`${window.location.href}`} style={{width: 285}} />
-                        <button style={{marginTop:-20, fontSize:15}} className="left" onClick={copyToClipboard}>Copy Me!</button>
-                        <h1 className="center"><a href={currentVideo}>Current Video</a></h1>
- 
+                        <SketchPicker />
+                    <h1 >Current Video: <a href={currentVideo}> </a> </h1>
                     {console.log(isPlaying)}
                     <div className="reactPlayerContainer">
                         {currentVideo ? (
@@ -436,32 +431,10 @@ const Room: React.FC<RoomProps> = ({}) => {
                         )}
     
                     </div>
-                    <HuePicker color = {"#333"} onChangeComplete={(color)=>setColorBrush(color)} className="c"/>
-                    <button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.current.clear()}}>Clear</button>
-                    <br></br>
-                    <h2 className={"center"}>Draw Here To Your Friends!</h2>
-                    
-                    <CanvasDraw 
-                        brushColor = {brush} 
-                        style={{display: "block", margin:"auto"}} 
-                        canvasHeight = {250} 
-                        canvasWidth ={900} 
-                        ref={canvasRef}
-                        
-                        />
-                        <br></br>
-                        <button style={{display: "block", margin:"auto"}} onClick={()=>canvasChange()}>Upload!</button>
-                    
-                        <h2 className={"center"}>Here Is What You And Your Friends Drew!</h2>
-                    <CanvasDraw 
-                        style={{display: "block", margin:"auto"}} 
-                        canvasHeight = {250} 
-                        canvasWidth ={900} 
-                        ref={canvasRefInc}
-                        hideGrid={true}
-                        disabled={true}
-                    
-                    />
+    
+                    <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef} brushColor ={colorBrush}/>
+                    {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
+                    }
                     <div className="container">
                     <div className="messagingContainer">
                         <h2>

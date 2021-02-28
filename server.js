@@ -79,7 +79,17 @@ io.on("connection", (socket) => {
           roomID: roomID,
           roomName: dataList[i].roomName,
           dataList: dataList[i],
+          duration: dataList[i].duration,
         });
+        try {
+          if (data.username.length > 0) {
+            socket.to(roomID).broadcast.emit("userJoined", {
+              username: data.username,
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
 
         dataList[i].users.push({
           userID: socket.id,
@@ -106,10 +116,9 @@ io.on("connection", (socket) => {
 
   // console.log(dataList);
 
-  
-  socket.on("canvas", data => {
+  socket.on("canvas", (data) => {
     io.in(roomID).emit("changeCanvas", data);
-  })
+  });
   socket.on("play", (data) => {
     console.log("play");
     socket.to(roomID).broadcast.emit("playClient", data);
@@ -120,7 +129,15 @@ io.on("connection", (socket) => {
   });
   socket.on("time", (data) => {
     console.log("changing time");
-    socket.to(roomID).broadcast.emit("changeTime", data);
+
+    for (let i = 0; i < dataList.length; i++) {
+      if (dataList[i].roomID === roomID) {
+        dataList[i].duration = data.currentTime;
+      }
+    }
+
+    // socket.to(roomID).broadcast.emit("changeTime", data);
+    io.in(roomID).emit("changeTime", data);
   });
   socket.on("updateQueue", (data) => {
     for (let i = 0; i < dataList.length; i++) {
@@ -164,6 +181,16 @@ io.on("connection", (socket) => {
   allUsers++;
   // console.log(data);
   // socket.broadcast.emit("updatePublicPlayers", allUsers);
+
+  const emitUserDisconnected = (name = String) => {
+    if (name.length > 0) {
+      socket.to(roomID).broadcast.emit("userDisconnected", {
+        username: name,
+        usersList: dataList.users,
+      });
+    }
+  };
+
   socket.on("disconnect", (data) => {
     // for (let i = 0; i < dataList.length; i++) {
     //   try {
@@ -184,21 +211,34 @@ io.on("connection", (socket) => {
     //   }
     // }
 
+    let name = "";
     for (let i = 0; i < currentUsers.length; i++) {
-      let name = "";
       if (currentUsers[i].userID === socket.id) {
         name = currentUsers[i].username;
       }
-      if (name.length > 0) {
-        socket.emit("receiveEvent", {
-          username: name,
-          event: "disconnected",
-        });
-      }
+      // if (name.length > 0) {
+      //   socket.emit("receiveEvent", {
+      //     username: name,
+      //     event: "disconnected",
+      //   });
+      // }
     }
 
+    // let users = [];
+    // for (let i = 0; i < dataList.users.length; i++) {
+    //   users = dataList[i].users;
+    //   if (user.usersID === socket.id) {
+    //     const index = dataList.users.indexOf(user);
+    //     if (index > -1) {
+    //       dataList.users.splice(index, 1);
+    //     }
+    //   }
+    // }
+
     allUsers--;
-    console.log("disconnect", socket.id);
+    console.log("disconnect", socket.id, name);
+    emitUserDisconnected(name);
+
     // socket.broadcast.emit("updatePublicPlayers", allUsers);
   });
   //}
