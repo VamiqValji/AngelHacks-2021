@@ -92,6 +92,10 @@ io.on("connection", (socket) => {
       console.log("pause");
       socket.to(roomID).broadcast.emit("pauseClient", data);
     });
+    socket.on("time", (data =>{
+      console.log("changing time");
+      socket.to(roomID).broadcast.emit("changeTime", data)
+    }))
 
     allUsers++;
     // console.log(data);

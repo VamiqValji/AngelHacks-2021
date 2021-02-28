@@ -1,5 +1,6 @@
+import React from 'react'
 import { useState, useEffect, useRef } from 'react'
-import ReactPlayer from 'react-player/lazy'
+import ReactPlayer from 'react-player/youtube'
 import CanvasDraw from "react-canvas-draw";
 import {
     useParams,
@@ -13,13 +14,7 @@ interface RoomProps {}
 let socket;
 
 const Room: React.FC<RoomProps> = ({}) => {
-    const state = {
-        color: "#ffc600",
-        width: 400,
-        height: 400,
-        brushRadius: 10,
-        lazyRadius: 12
-      };
+    
     const inputRef = useRef<any>(null);
 
     const ENDPOINT = "http://localhost:3001";
@@ -44,6 +39,12 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.on("connectedResponse", (res) => {
             console.log(res);
             setRoomData(res);
+            
+        })
+
+        
+        socket.on("changeTime", data => {
+            videoRef.current.seekTo(data, 'seconds')
         })
     
         socket.on("playClient", (data) => {
@@ -73,10 +74,16 @@ const Room: React.FC<RoomProps> = ({}) => {
         let temps = queue;
         temps.shift();
         setQueue(temps);
+        setQueue(queue)
 
     }
 
+    const handleTime = () => {
+        socket.emit("time", videoRef.current.getCurrentTime());
+    }
+
     const start = () => {
+        //
         socket.emit("play"/*, "username"*/);
         setIsPlaying(true);
         // isPlaying = true;
@@ -84,18 +91,22 @@ const Room: React.FC<RoomProps> = ({}) => {
     }
     
     const pause = () => {
+        //videoRef.current.seekTo(currentTime, 'seconds')
         socket.emit("pause"/*, "username"*/);
         // isPlaying = false;
         setIsPlaying(false);
         // alert(isPlaying)
     }
 
+    const videoRef = useRef<any>(null);
     const videoStarted = () => {
-        setIsPlaying(false);
+        setTimeout(() => setIsPlaying(false), 200);
+        videoRef.current.seekTo(0, 'seconds')
+        videoRef.current.muted=false;
     }
 
     const time = (sec:any) => {
-        alert(sec);
+        //alert(sec);
     }
 
 
@@ -126,39 +137,71 @@ const Room: React.FC<RoomProps> = ({}) => {
         <li style={{color: "red"}}>{props.value}</li>
         )
     }
+    const [seekTime ,setSeekTime] = useState(0);
+    function handleSeeking(seconds) {
+        console.log(seekTime)                       //9                    //15
+        if(seconds.playedSeconds - seekTime > 2 || seconds.playedSeconds - seekTime < -2) {
+            handleTime()
+            setSeekTime(seconds.playedSeconds);
+        } else {
+            setSeekTime(seconds.playedSeconds);
+        }
+    }
 
     const [colorBrush,setColorBrush] = useState(String);
+    const [currentTime, setCurrentTime] = useState(Number)
+    const [userUsername, setUserUsername] = useState<String>("")
+    //videoRef.current.seekTo(videoRef.current.getCurrentTime(), 'seconds')
+
+    while(userUsername.length <= 0) {
+        let herllo = prompt("Please enter your name")
+        if(herllo != null) {
+            if(herllo.length > 0) {
+                setUserUsername(herllo)
+                break;
+            }
+        }
+        
+    }
+    
 
     return (
+    <body>
         <div className="room">
            {roomData.success === true ? (
                <div>
                    <SketchPicker />
-            <h1>Current Video: <a href={currentVideo}> </a> </h1>
+            <h1 >Current Video: <a href={currentVideo}> </a> </h1>
+            {console.log(isPlaying)}
             <ReactPlayer 
+                ref = {videoRef}
                 url={currentVideo} 
                 controls={true} 
-                volume={0.5} 
-                onStart={videoStarted}
+                volume={0.5}
+                //onSeeked={(seconds) => console.log(seconds)}
+                //onReady={} 
+                onStart={() => videoStarted()}
                 onPlay={start} 
                 onPause={pause} 
                 onEnded={nextVideo} 
                 playing = {isPlaying} 
-                onProgress ={(played)=>time(played)} 
+                onProgress ={(seconds)=>  {handleSeeking(seconds)}}
+                muted={true}
                 style={
                     { margin: "0 auto"}
                 } 
                 width={888} 
                 height={500}
+                alt = {"hello"}
                     />
 
             <input type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
-            <br></br>
-            <br></br>
+            
             <button  style={{   display: "block", margin:"auto"}} onClick={ (e)=> {
                 clicked()
                 inputRef.current.value = ""
                 setData("")} }>Enter The URL And Click Me!</button>
+                <br></br>
             <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>Click to Skip</button>
             
             <div className="queueContainer">
@@ -180,12 +223,14 @@ const Room: React.FC<RoomProps> = ({}) => {
             {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
             }
             </div>
+            
            ) : (
             <div className="center">
                <h2>Invalid Room</h2>
             </div>
            ) } 
         </div>
+        </body>
             
     )
 }
