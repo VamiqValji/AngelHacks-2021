@@ -2,12 +2,13 @@ chat across users
 deploy
 
 home page
-get undraw png
+create page
+github in nav
+
 
 devpost
 script 
 video
 
-github in nav
 
 notes?
