@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 const router = require("express").Router();
+const path = require("path");
 
 app.use(express.json());
 
@@ -13,6 +14,15 @@ app.use(cors({}));
 
 // app.use("/create", createRoute);
 // app.use("/join", joinRoute);
+
+// server static assets if in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 //socketio
 const server = require("http").createServer(app);
@@ -29,22 +39,22 @@ let allUsers = 0;
 let dataList = []; // users and rooms
 let currentUsers = [];
 
-dataList.push(
-  {
-    roomName: "test",
-    roomID: "test",
-    users: [],
-    queue: [],
-    duration: "",
-  },
-  {
-    roomName: "test2",
-    roomID: "test2",
-    users: [],
-    queue: [],
-    duration: "",
-  }
-);
+// dataList.push(
+//   {
+//     roomName: "test",
+//     roomID: "test",
+//     users: [],
+//     queue: [],
+//     duration: "",
+//   },
+//   {
+//     roomName: "test2",
+//     roomID: "test2",
+//     users: [],
+//     queue: [],
+//     duration: "",
+//   }
+// );
 
 // const joinRoom = (roomName = String, socket) => {
 //   console.log(roomName);
