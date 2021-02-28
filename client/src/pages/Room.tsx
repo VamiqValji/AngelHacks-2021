@@ -31,10 +31,36 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
+    const [userUsername, setUserUsername] = useState<String>("")
+    const inputUsernameRef = useRef<HTMLInputElement>(null);
+
+    const Modal = () => {
+        
+        const submitUsername = (username:any) => {
+            console.log(username);
+            setUserUsername(username);
+        }
+        
+        return (
+            <>
+                <div className="modalBackground">
+                <div className="modalContainer">
+                    <h1>Please Enter Your Username To Join The Room</h1>
+                    <input ref={inputUsernameRef} placeholder="Enter your username..." type="text"/>
+                    <button onClick={() => submitUsername(inputUsernameRef.current?.value)} >Submit</button>
+                </div>
+                </div>
+            </>
+        )
+    }
+
     useEffect(() => {
         socket = io(ENDPOINT);
         // console.log("connected", roomID);
-        socket.emit("connected", roomID);
+        socket.emit("connected", {
+            roomID: roomID,
+            username: userUsername
+        });
 
         socket.on("connectedResponse", (res) => {
             console.log("CONNECTED RES",res);
@@ -42,10 +68,9 @@ const Room: React.FC<RoomProps> = ({}) => {
             console.log("connectRes:res.dataList.queue", res.dataList.queue)
             setQueue(res.dataList.queue);
         })
-
         
         socket.on("changeTime", data => {
-            videoRef.current.seekTo(data, 'seconds')
+            videoRef.current.seekTo(data.currentTime, 'seconds')
         })
     
         socket.on("playClient", (data) => {
@@ -72,11 +97,13 @@ const Room: React.FC<RoomProps> = ({}) => {
         })
 
         return () => {
-          socket.emit("disconnected", "disconnected");
+          socket.emit("disconnected", {
+            username: userUsername,
+          });
           socket.disconnect();
           socket.off();
         }
-      }, [ENDPOINT, roomID, setRoomData, setIsPlaying])
+      }, [ENDPOINT, roomID, setRoomData, setIsPlaying, userUsername, setUserUsername])
 
     useEffect(() => {
         //setQueue((prev) => [...prev,"https://www.youtube.com/watch?v=iv8rSLsi1xo&ab_channel=AnsonAlexander"]);
@@ -88,21 +115,24 @@ const Room: React.FC<RoomProps> = ({}) => {
         let temps = queue;
         if(temps[0] !== undefined || temps.length > 0) {
             socket.emit("nextVideo", {
-            username: "test",
-            queue: temps
-        });
-    }
-
-            
+                username: userUsername,
+                queue: temps
+            });
+        }
     }
 
     const handleTime = () => {
-        socket.emit("time", videoRef.current.getCurrentTime());
+        socket.emit("time", {
+            username: userUsername,
+            currentTime: videoRef.current.getCurrentTime()
+        });
     }
 
     const start = () => {
         //
-        socket.emit("play"/*, "username"*/);
+        socket.emit("play", {
+            username: userUsername,
+        });
         setIsPlaying(true);
         // isPlaying = true;
         // alert(isPlaying)
@@ -110,7 +140,9 @@ const Room: React.FC<RoomProps> = ({}) => {
     
     const pause = () => {
         //videoRef.current.seekTo(currentTime, 'seconds')
-        socket.emit("pause"/*, "username"*/);
+        socket.emit("pause", {
+            username: userUsername,
+        });
         // isPlaying = false;
         setIsPlaying(false);
         // alert(isPlaying)
@@ -147,7 +179,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                 temp.push(data);
                 socket.emit("updateQueue", {
                     queue: temp,
-                    username: "test"
+                    username: userUsername,
                 });
             } else {
                 alert("Cannot Play that. Please Try Another URL")
@@ -174,7 +206,6 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [colorBrush,setColorBrush] = useState(String);
     const [currentTime, setCurrentTime] = useState(Number)
-    const [userUsername, setUserUsername] = useState<String>("")
     const linkRef = useRef<any>(null);
     //videoRef.current.seekTo(videoRef.current.getCurrentTime(), 'seconds')
 
@@ -193,88 +224,92 @@ const Room: React.FC<RoomProps> = ({}) => {
         linkRef.current.setSelectionRange(0, 99999);
         document.execCommand("copy");
     }
+    
+    if (userUsername.length > 0) {
+        return (
+            <>
+                {/* <body> */}
+                <div className="room">
+                {roomData.success === true ? (
+                    <div>
+                        <h1>Room Name: {roomData.roomName}</h1>
+                        <SketchPicker />
+                    <h1 >Current Video: <a href={currentVideo}> </a> </h1>
+                    {console.log(isPlaying)}
+                    <div className="reactPlayerContainer">
+                        {currentVideo ? (
+                        <ReactPlayer 
+                        ref = {videoRef}
+                        url={currentVideo} 
+                        controls={true} 
+                        volume={0.5}
+                        //onSeeked={(seconds) => console.log(seconds)}
+                        //onReady={} 
+                        onStart={() => videoStarted()}
+                        onPlay={start} 
+                        onPause={pause} 
+                        onEnded={nextVideo} 
+                        playing = {isPlaying} 
+                        onProgress ={(seconds)=>  {handleSeeking(seconds)}}
+                        muted={true}
+                        style={
+                            { margin: "0 auto"}
+                        } 
+                        width={888} 
+                        height={500}
+                        alt = {"hello"}
+                            />
+                        ) : (
+                            <span><h2>Add Videos To The Queue!</h2></span>
+                        )}
 
-    return (
-    <body>
-        <div className="room">
-           {roomData.success === true ? (
-               <div>
-                   <h2>Room Link:</h2>
-                   <input ref={linkRef} type="text" value={`${window.location.href}`} style={{width: 285}} />
-                   <button style={{marginTop:-20, fontSize:15}} className="left" onClick={copyToClipboard}>Copy Me!</button>
-            <h1 className="center"><a href={currentVideo}>Current Video</a></h1>
-            {console.log(isPlaying)}
-            <svg width="400" height="180">
-                <rect x="50" y="20" width="150" height="150" style={{  fill:'gray', opacity:0.5     }} />
-            </svg>
-            <ReactPlayer 
-                ref = {videoRef}
-                url={currentVideo} 
-                controls={true} 
-                volume={0.5}
-                //onSeeked={(seconds) => console.log(seconds)}
-                //onReady={} 
-                onStart={() => videoStarted()}
-                onPlay={start} 
-                onPause={pause} 
-                onEnded={nextVideo} 
-                playing = {isPlaying} 
-                onProgress ={(seconds)=>  {handleSeeking(seconds)}}
-                muted={true}
-                style={
-                    { margin: "0 auto"}
-                } 
-                width={888} 
-                height={500}
-                alt = {"hello"}
-                    />
-
-            <input placeholder="Enter URL here..." type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
-            <br></br>
-            <br></br>
-            <button  style={{   display: "block", margin:"auto"}} onClick={ (e)=> {
-                if (inputRef.current.value.length > 0) {
-                    clicked()
-                    inputRef.current.value = ""
-                    setData("")
-                }
-                } }>Enter The URL And Click Me!</button>
-            <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>Click to Skip</button>
-            
-            <div className="queueContainer">
-                <h2 className="center">Queue:</h2>
-                {queue.length >= 0 ? (
-                    <ul className="center">
-                    {queue.map((number) =>
-                        <ListItem key={number.toString() + Math.random()}
-                        value={number} />
-                    )}
-                </ul>
+                    </div>
+                    <input placeholder="Enter URL here..." type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
+                    <br></br>
+                    <br></br>
+                    <button  style={{   display: "block", margin:"auto"}} onClick={ (e)=> {
+                        if (inputRef.current.value.length > 0) {
+                            clicked()
+                            inputRef.current.value = ""
+                            setData("")
+                        }
+                        } }>Enter The URL And Click Me!</button>
+                    <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>Click to Skip</button>
+                    
+                    <div className="queueContainer">
+                        <h2 className="center">Queue:</h2>
+                        {queue.length > 0 ? (
+                            <ul className="center">
+                            {queue.map((number) =>
+                                <ListItem key={number.toString() + Math.random()}
+                                value={number} />
+                            )}
+                        </ul>
+                        ) : (
+                            <ul className="center">
+                                <li>Nothing here!</li>
+                            </ul>
+                        )}
+    
+                    </div>
+    
+                    <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef} brushColor ={colorBrush}/>
+                    {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
+                    }
+                    </div>
+                    
                 ) : (
-                    <ul className = "center">
-                        <li>sdfsd</li>
-                    </ul>
-                )}
+                    <div className="center">
+                    <h2>Invalid Room</h2>
+                    </div>
+                ) } 
+                </div>
+                </> 
+            )
+    } else {
+        return <Modal />
+    }
 
-            </div>
-
-            <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef} brushColor ={colorBrush}/>
-            {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
-            }
-            </div>
-            
-           ) : (
-            <div className="center">
-               <h2>Invalid Room</h2>
-            </div>
-           ) } 
-        </div>
-        </body>
-            
-    )
 }
-//<h2>Room: {roomData.roomName} </h2>
-
-
 
 export default Room;

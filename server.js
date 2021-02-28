@@ -58,10 +58,11 @@ io.on("connection", (socket) => {
   socket.on("connected", (data) => {
     console.log("priv");
     // socket.join("priv");
-    roomID = data;
+    roomID = data.roomID;
+    console.log(`${data.username} joined.`);
 
-    console.log("roomIDBEFORE", data);
-    console.log("roomID", roomID);
+    // console.log("roomIDBEFORE", data);
+    // console.log("roomID", roomID);
 
     for (let i = 0; i < dataList.length; i++) {
       console.log(`COMPARE: (${dataList[i].roomID})(${roomID})`);
@@ -79,7 +80,7 @@ io.on("connection", (socket) => {
 
         dataList[i].users.push({
           userID: socket.id,
-          username: "test",
+          username: data.username,
         });
         inPrivRoom = true;
       }
@@ -112,10 +113,10 @@ io.on("connection", (socket) => {
     for (let i = 0; i < dataList.length; i++) {
       if (dataList[i].roomID === roomID) {
         dataList[i].queue = data.queue;
-        console.log("updateQueue", "CURRENT QUEUE:", dataList[i].queue);
+        // console.log("updateQueue", "CURRENT QUEUE:", dataList[i].queue);
       }
     }
-    console.log("updateQueue", data);
+    // console.log("updateQueue", data);
     socket.to(roomID).broadcast.emit("updateQueueClient", data);
   });
   socket.on("nextVideo", (data) => {
@@ -144,16 +145,25 @@ io.on("connection", (socket) => {
   // socket.broadcast.emit("updatePublicPlayers", allUsers);
   socket.on("disconnected", (data) => {
     for (let i = 0; i < dataList.length; i++) {
-      if (dataList[i].roomID === roomID) {
-        // if room id is correct
-        const index = dataList[i].users.indexOf(socket.id);
-        if (index > -1) {
-          dataList[i].users.splice(index, 1);
+      try {
+        if (dataList[i].roomID === roomID) {
+          // if room id is correct
+          for (let i = 0; d < dataList[i].users.length; d++) {
+            if (dataList[i].users[d].userID === socketID) {
+              // if correct player
+              const index = dataList[i].users.indexOf(dataList[i].users[d]);
+              if (index > -1) {
+                dataList[i].users.splice(index, 1);
+              }
+            }
+          }
         }
+      } catch (err) {
+        console.log(err);
       }
     }
     allUsers--;
-    console.log(data);
+    console.log("disconnect data", data);
     // socket.broadcast.emit("updatePublicPlayers", allUsers);
   });
   //}

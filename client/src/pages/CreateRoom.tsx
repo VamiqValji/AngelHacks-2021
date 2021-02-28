@@ -59,15 +59,15 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                     <form onSubmit={(e) => joinRoom(e)} >
                         <h3 style={{margin:10}} className="center">Room Name</h3>
                         <span className="center" >
-                        <input className="center" ref={roomName} type="text" placeholder="Enter room name..." />
+                        <input className="center" ref={roomName} type="text" placeholder="Enter room name..." required />
                         </span>
                         <br/>
-                        <h3 style={{margin:10, marginTop:-10}} className="center">Username</h3>
+                        {/* <h3 style={{margin:10, marginTop:-10}} className="center">Username</h3>
                         <span className="center" >
                         <input className="center" ref={inputName} type="text" placeholder="Enter your name..." />
                         </span>
-                        <br/>
-                        <button className="center">Create</button>
+                        <br/> */}
+                        <button style={{marginTop:-10}} className="center">Create</button>
                     </form>
                     { gotSuccessRes ? ( // roomID.length > 3
                         <>
