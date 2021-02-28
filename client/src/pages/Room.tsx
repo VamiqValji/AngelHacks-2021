@@ -5,7 +5,15 @@ import CanvasDraw from "react-canvas-draw";
 interface RoomProps {}
 
 
+
 const Room: React.FC<RoomProps> = ({}) => {
+    const state = {
+        color: "#ffc600",
+        width: 400,
+        height: 400,
+        brushRadius: 10,
+        lazyRadius: 12
+      };
     const inputRef = useRef<any>(null);
 
     const [currentVideo, setCurrentVideo] = useState<string>("");
@@ -35,6 +43,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         isPlaying = false;
     }
 
+    const time = (sec:any) => {
+        alert(sec);
+    }
+
 
 
     const [data,setData] = useState(String);
@@ -46,9 +58,15 @@ const Room: React.FC<RoomProps> = ({}) => {
         
     }
 
+    var canvasRef = useRef<any>(null);
+
     function clicked() {
         if(data != "") {
-        setQueue((prev) => [...prev, data]);
+            if(ReactPlayer.canPlay(data)) {
+                setQueue((prev) => [...prev, data]);
+            } else {
+                alert("Cannot Play that. Please Try Another URL")
+            }
         }
     }
 
@@ -58,21 +76,20 @@ const Room: React.FC<RoomProps> = ({}) => {
         )
     }
 
-    function sharingIsCaring() {
-
-    }
-
-    
     return (
         <div>
             <h1>Current Video: <a href={currentVideo}> </a> </h1>
-            <ReactPlayer url={currentVideo} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} style={{ margin: "0 auto"}}/>
+            <ReactPlayer url={currentVideo} controls={true} volume={0.5} onPlay={start} onPause={pause} onEnded={nextVideo} playing = {isPlaying} onSeek ={(sec)=>time(sec)} style={{ margin: "0 auto"}} width={888} height={500}/>
             <input type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
             <button  style={{   display: "block", margin:"auto"}} onClick={ (e)=> {
                 clicked()
                 inputRef.current.value = ""
                 setData("")} }>Enter The URL And Click Me!</button>
             <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>click to skip</button>
+            
+
+            <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef}/>
+            <button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
             <h2>Queue:</h2>
             <ul>
                 {queue.map((number) =>
@@ -80,8 +97,6 @@ const Room: React.FC<RoomProps> = ({}) => {
                 value={number} />
                 )}
             </ul>
-
-            <CanvasDraw getSaveData={sharingIsCaring} style={{ float:"right", position: "relative", top: "3px"}} canvasHeight = {700}/>
         </div>
             
     )
