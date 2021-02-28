@@ -8,7 +8,7 @@ interface CreateRoomProps {
 
 const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
 
-    const roomName = useRef<HTMLInputElement>(null);
+    const roomName = useRef<any>();
     const inputName = useRef<HTMLInputElement>(null);
     const linkRef = useRef<any>(null);
     const [gotSuccessRes, setGotSuccessRes] = useState<boolean>(false);
@@ -53,6 +53,12 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
         document.execCommand("copy");
     }
 
+    const checkMax = () => {
+        if (roomName.current?.value >= 10) {
+            roomName.current.value = roomName.current?.value.slice(0, 10);
+        }
+    }
+
     return (
         <>
             <div className="containerContainer">
@@ -63,7 +69,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                     <form onSubmit={(e) => joinRoom(e)} >
                         <h3 style={{margin:10}} className="center">Room Name</h3>
                         <span className="center" >
-                        <input className="center" ref={roomName} type="text" placeholder="Enter room name..." required />
+                        <input className="center" onChange={checkMax} ref={roomName} type="text" placeholder="Enter room name..." required />
                         </span>
                         <br/>
                         {/* <h3 style={{margin:10, marginTop:-10}} className="center">Username</h3>

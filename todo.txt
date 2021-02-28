@@ -1,9 +1,7 @@
 chat across users
 deploy
 
-home page
-create page
-github in nav
+room page
 
 
 devpost

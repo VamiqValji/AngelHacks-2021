@@ -48,6 +48,9 @@ a:hover {
   font-weight: 600;
   padding: 1rem;
 }
+.homeContainer img {
+  filter: drop-shadow(0rem 0rem 0.1rem black);
+}
 
 /* MY CLASS SHORTCUTS*/
 
