@@ -1,12 +1,5 @@
-chat across users
 deploy
-
-room page
-
 
 devpost
 script 
 video
-
-
-notes?

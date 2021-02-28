@@ -33,6 +33,8 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
+    const [chatIsToggled, setChatIsToggled] = useState<boolean>(true);
+
     const [userUsername, setUserUsername] = useState<string>("")
     const inputUsernameRef = useRef<HTMLInputElement>(null);
 
@@ -507,10 +509,17 @@ const Room: React.FC<RoomProps> = ({}) => {
                         disabled={true}
                     
                     />
-                    
+                    <br/>
+                    <div className={`fullChatContainer ${ chatIsToggled ? "chatToggled" : ""}`}>
                     <div className="container">
                     <div className="messagingContainer">
                         <br/>
+                        <span className="chatArrow"
+                        onClick={(e) => 
+                        {
+                            e.preventDefault();
+                            setChatIsToggled(!chatIsToggled);
+                        }}><i className={`${ chatIsToggled ? "fas fa-arrow-up" : "fas fa-arrow-down"}`}></i></span>
                         <h2>
                         Chat & Events
                         <div>
@@ -537,6 +546,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                             <button>Send</button>
                             </span>
                         </form>
+                        </div>
                         </div>
                         </div>
                         </div>

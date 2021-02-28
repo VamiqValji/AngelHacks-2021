@@ -267,29 +267,58 @@ button:hover {
   justify-content: center;
 }
 
+.fullChatContainer {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 1rem 0rem 0rem 0rem;
+  width: 32rem;
+  height: 45rem;
+  transition: 0.2s;
+}
 .messagingContainer {
   margin-top: 2rem;
 }
 .messagingContainer h2 {
+  margin-top: -2rem;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: center;
 }
 .messagingContainer h2 div {
   position: absolute;
   align-self: center;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 300;
   margin-left: 10rem;
   font-size: 0.6em;
 }
 .messageArea {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.8);
   border-radius: 1rem 0.2rem 0.2rem 1rem;
   height: 35rem;
   width: 30rem;
   margin: 1rem;
   padding: 1rem;
   overflow: auto;
+}
+.chatArrow {
+  position: fixed;
+  bottom: 40.5rem;
+  right: 28rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  font-size: 1.5em;
+  transition: 0.2s;
+}
+.fullChatContainer.chatToggled {
+  margin-bottom: -40rem;
+}
+.fullChatContainer.chatToggled .chatArrow {
+  margin-bottom: -40rem;
 }
 .messageAreaContainer {
   /* background: black; */
@@ -298,6 +327,8 @@ button:hover {
   margin: 0 auto; */
   display: flex;
   justify-content: center;
+  margin-top: -1rem;
+  margin-bottom: -2rem;
 }
 .messageArea::-webkit-scrollbar {
   width: 4px;
@@ -307,23 +338,23 @@ button:hover {
   width: 10px;
 }
 .messageArea::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 1rem;
   transition: 0.1s;
 }
 .messageArea::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 1rem;
   transition: 0.1s;
 }
 .messageArea::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.3);
 }
 .messageArea span {
   overflow: hidden;
   margin: 1rem;
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 1rem;
   display: block;
   word-wrap: break-word;
@@ -368,16 +399,20 @@ form.messageBox {
   margin-top: 0.2rem;
 }
 .messageBox span {
-  background: rgba(0, 0, 0, 0.5);
+  /* background: rgba(0, 0, 0, 0.5); */
   margin: 1rem;
   border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.1);
 }
 .messageBox input {
-  background: none;
   min-height: auto;
+  margin-top: -5rem;
+  background: none;
 }
 .messageBox *,
 .messageBox input {
+  /* background: rgba(255, 255, 255, 0.1); */
+
   font-size: 1em;
   margin-right: 0.1rem;
   border-radius: 0rem;
@@ -386,7 +421,14 @@ form.messageBox {
 .messageBox button {
   border-radius: 0rem 1rem 1rem 0rem;
   padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.2s;
 }
+.messageBox button:hover {
+  color: white;
+  background: var(--red);
+}
+
 .who {
   margin-left: 0.3rem;
   color: rgba(255, 255, 255, 0.4);
