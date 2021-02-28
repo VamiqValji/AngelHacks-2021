@@ -109,12 +109,28 @@ io.on("connection", (socket) => {
         console.log("updateQueue", "CURRENT QUEUE:", dataList[i].queue);
       }
     }
-    console.log(data);
+    console.log("updateQueue", data);
     socket.to(roomID).broadcast.emit("updateQueueClient", data);
   });
   socket.on("nextVideo", (data) => {
     console.log("nextVideo");
-    socket.to(roomID).broadcast.emit("nextVideoClient", data);
+
+    let temps = data.queue;
+
+    for (let i = 0; i < dataList.length; i++) {
+      if (dataList[i].roomID === roomID) {
+        // console.log("BEFORE", dataList[i].queue, "AFTER", temps);
+        dataList[i].queue = temps;
+        // socket.to(roomID).broadcast.emit("nextVideoClient", {
+        //   username: data.username,
+        //   queue: temps,
+        // });
+        io.in(roomID).emit("nextVideoClient", {
+          username: data.username,
+          queue: temps,
+        });
+      }
+    }
   });
 
   allUsers++;

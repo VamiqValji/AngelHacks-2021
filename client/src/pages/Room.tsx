@@ -64,11 +64,9 @@ const Room: React.FC<RoomProps> = ({}) => {
         })
 
         socket.on("nextVideoClient", (data) => {
-            console.log("nextVideoClient");
-            setCurrentVideo(queue[0]);
-            let temps = queue;
-            temps.shift();
-            setQueue(temps);
+            console.log("nextVideoClient", data);
+            setQueue(data.queue);
+            setCurrentVideo(data.queue[0]);
         })
 
         return () => {
@@ -84,13 +82,18 @@ const Room: React.FC<RoomProps> = ({}) => {
     }, [setQueue, setCurrentVideo])
 
     function nextVideo() {
-        socket.emit("nextVideo", {
-            username: "test"
-        });
-        setCurrentVideo(queue[0])
         let temps = queue;
-        temps.shift();
-        setQueue(temps);
+        console.log("before",temps);
+        let i = temps.shift();
+        if (i !== undefined) {
+            socket.emit("nextVideo", {
+                username: "test",
+                queue: temps
+            });
+            console.log("after", temps);
+            setQueue(temps);
+            setCurrentVideo(temps[0]);
+        }
     }
 
     const start = () => {
