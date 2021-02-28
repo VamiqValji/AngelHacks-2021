@@ -406,7 +406,14 @@ const Room: React.FC<RoomProps> = ({}) => {
                 </> 
             )
     } else {
-        return <Modal />
+        return (
+            <>{roomData.success === true ? (<Modal />) : (
+            <div style={{marginTop:20}}className="center">
+            <h2>Invalid Room</h2>
+            </div>
+            )}
+        </>
+        )
     }
 
 }
