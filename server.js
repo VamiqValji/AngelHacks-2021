@@ -115,10 +115,9 @@ io.on("connection", (socket) => {
 
   // console.log(dataList);
 
-  
-  socket.on("canvas", data => {
+  socket.on("canvas", (data) => {
     io.in(roomID).emit("changeCanvas", data);
-  })
+  });
   socket.on("play", (data) => {
     console.log("play");
     socket.to(roomID).broadcast.emit("playClient", data);
@@ -173,6 +172,15 @@ io.on("connection", (socket) => {
   allUsers++;
   // console.log(data);
   // socket.broadcast.emit("updatePublicPlayers", allUsers);
+
+  const emitUserDisconnected = (name = String) => {
+    if (name.length > 0) {
+      socket.to(roomID).broadcast.emit("userDisconnected", {
+        username: name,
+      });
+    }
+  };
+
   socket.on("disconnect", (data) => {
     // for (let i = 0; i < dataList.length; i++) {
     //   try {
@@ -193,21 +201,23 @@ io.on("connection", (socket) => {
     //   }
     // }
 
+    let name = "";
     for (let i = 0; i < currentUsers.length; i++) {
-      let name = "";
       if (currentUsers[i].userID === socket.id) {
         name = currentUsers[i].username;
       }
-      if (name.length > 0) {
-        socket.emit("receiveEvent", {
-          username: name,
-          event: "disconnected",
-        });
-      }
+      // if (name.length > 0) {
+      //   socket.emit("receiveEvent", {
+      //     username: name,
+      //     event: "disconnected",
+      //   });
+      // }
     }
 
     allUsers--;
-    console.log("disconnect", socket.id);
+    console.log("disconnect", socket.id, name);
+    emitUserDisconnected(name);
+
     // socket.broadcast.emit("updatePublicPlayers", allUsers);
   });
   //}
