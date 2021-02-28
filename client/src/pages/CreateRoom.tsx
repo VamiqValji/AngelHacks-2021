@@ -57,6 +57,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
         <>
             <div className="containerContainer">
                 <div className="container">
+                <div className="joinCreateContainer">
                     <div className="joinCreate">
                     <h2>Create Room</h2>
                     <form onSubmit={(e) => joinRoom(e)} >
@@ -90,6 +91,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                         </>
                     )}
                     </div>
+                </div>
                 </div>
             </div>
         </>

@@ -54,7 +54,7 @@ function App() {
               <Link to="/create">Create</Link>
             </li>
              <li>
-              <Link to="/room/">Room</Link>
+              {/* <Link to="/room/">Room</Link> */}
             </li>
             {allUsersNumber ? <div className="usersOnline">People Online: {allUsersNumber}</div> : ""}
           </ul>
