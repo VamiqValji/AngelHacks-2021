@@ -57,7 +57,10 @@ const Room: React.FC<RoomProps> = ({}) => {
     useEffect(() => {
         socket = io(ENDPOINT);
         // console.log("connected", roomID);
-        socket.emit("connected", roomID);
+        socket.emit("connected", {
+            roomID: roomID,
+            username: userUsername
+        });
 
         socket.on("connectedResponse", (res) => {
             console.log("CONNECTED RES",res);
@@ -67,7 +70,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         })
         
         socket.on("changeTime", data => {
-            videoRef.current.seekTo(data, 'seconds')
+            videoRef.current.seekTo(data.currentTime, 'seconds')
         })
     
         socket.on("playClient", (data) => {
@@ -92,11 +95,13 @@ const Room: React.FC<RoomProps> = ({}) => {
         })
 
         return () => {
-          socket.emit("disconnected", "disconnected");
+          socket.emit("disconnected", {
+            username: userUsername,
+          });
           socket.disconnect();
           socket.off();
         }
-      }, [ENDPOINT, roomID, setRoomData, setIsPlaying])
+      }, [ENDPOINT, roomID, setRoomData, setIsPlaying, userUsername, setUserUsername])
 
     useEffect(() => {
         //setQueue((prev) => [...prev,"https://www.youtube.com/watch?v=iv8rSLsi1xo&ab_channel=AnsonAlexander"]);
@@ -109,7 +114,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         let i = temps.shift();
         if (i !== undefined) {
             socket.emit("nextVideo", {
-                username: "test",
+                username: userUsername,
                 queue: temps
             });
             console.log("after", temps);
@@ -119,12 +124,17 @@ const Room: React.FC<RoomProps> = ({}) => {
     }
 
     const handleTime = () => {
-        socket.emit("time", videoRef.current.getCurrentTime());
+        socket.emit("time", {
+            username: userUsername,
+            currentTime: videoRef.current.getCurrentTime()
+        });
     }
 
     const start = () => {
         //
-        socket.emit("play"/*, "username"*/);
+        socket.emit("play", {
+            username: userUsername,
+        });
         setIsPlaying(true);
         // isPlaying = true;
         // alert(isPlaying)
@@ -132,7 +142,9 @@ const Room: React.FC<RoomProps> = ({}) => {
     
     const pause = () => {
         //videoRef.current.seekTo(currentTime, 'seconds')
-        socket.emit("pause"/*, "username"*/);
+        socket.emit("pause", {
+            username: userUsername,
+        });
         // isPlaying = false;
         setIsPlaying(false);
         // alert(isPlaying)
@@ -169,7 +181,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                 temp.push(data);
                 socket.emit("updateQueue", {
                     queue: temp,
-                    username: "test"
+                    username: userUsername,
                 });
             } else {
                 alert("Cannot Play that. Please Try Another URL")
@@ -219,7 +231,9 @@ const Room: React.FC<RoomProps> = ({}) => {
                         <SketchPicker />
                     <h1 >Current Video: <a href={currentVideo}> </a> </h1>
                     {console.log(isPlaying)}
-                    <ReactPlayer 
+                    <div className="reactPlayerContainer">
+                        {currentVideo ? (
+                        <ReactPlayer 
                         ref = {videoRef}
                         url={currentVideo} 
                         controls={true} 
@@ -240,7 +254,11 @@ const Room: React.FC<RoomProps> = ({}) => {
                         height={500}
                         alt = {"hello"}
                             />
-    
+                        ) : (
+                            <span><h2>Add Videos To The Queue!</h2></span>
+                        )}
+
+                    </div>
                     <input placeholder="Enter URL here..." type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
                     <br></br>
                     <br></br>

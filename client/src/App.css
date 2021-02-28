@@ -187,3 +187,19 @@ button:hover {
 }
 
 /* MODAL */
+
+.reactPlayerContainer {
+  width: 888px;
+  height: 500px;
+  background: rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+  border-radius: 1rem;
+}
+.reactPlayerContainer span {
+  height: 100%;
+  /* background: black; */
+}
+.reactPlayerContainer h2 {
+  display: flex;
+  justify-content: center;
+}
