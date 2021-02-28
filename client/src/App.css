@@ -95,6 +95,11 @@ h3 {
 .githubLogo {
   margin-left: -2.7rem;
   font-size: 1.5em;
+  color: white;
+  transition: 0.2s;
+}
+.githubLogo:hover {
+  color: var(--red);
 }
 
 .nav nav ul li {
@@ -265,6 +270,40 @@ button:hover {
 .reactPlayerContainer h2 {
   display: flex;
   justify-content: center;
+}
+
+.drawingsContainer {
+  background: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  border-radius: 0rem 0rem 1rem 0rem;
+  padding: 1rem;
+  transition: 0.2s;
+}
+.drawingsContainer button {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.25);
+}
+.drawingsContainer .drawingsArrow {
+  position: fixed;
+  top: 29rem;
+  left: 46rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  font-size: 1.5em;
+  transition: 0.2s;
+}
+.drawingsContainer .drawingsArrow i {
+  margin-left: 1rem;
+}
+.drawingsContainer.toggled .drawingsArrow {
+  margin-left: -46rem;
+}
+.drawingsContainer.toggled {
+  margin-left: -47rem;
 }
 
 .fullChatContainer {

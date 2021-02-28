@@ -34,6 +34,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
     const [chatIsToggled, setChatIsToggled] = useState<boolean>(true);
+    const [drawingIsToggled, setDrawingIsToggled] = useState<boolean>(true);
 
     const [userUsername, setUserUsername] = useState<string>("")
     const inputUsernameRef = useRef<HTMLInputElement>(null);
@@ -484,6 +485,13 @@ const Room: React.FC<RoomProps> = ({}) => {
     
                     </div>
                     <br/>
+                    <div className={`drawingsContainer ${ drawingIsToggled ? "toggled" : ""}`}>
+                    <span className="drawingsArrow"
+                        onClick={(e) => 
+                        {
+                            e.preventDefault();
+                            setDrawingIsToggled(!drawingIsToggled);
+                        }}>Drawings<i className={`${ drawingIsToggled ? "fas fa-arrow-right" : "fas fa-arrow-left"}`}></i></span>
                     <h2 style={{marginTop:10}} className={"center"}>Upload Drawings To The Room!</h2>
                     <br/>
                     <HuePicker color = {"#333"} onChangeComplete={(color)=>setColorBrush(color)} className="c"/>
@@ -493,7 +501,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                         brushColor = {brush} 
                         style={{display: "block", margin:"auto"}} 
                         canvasHeight = {250} 
-                        canvasWidth ={900} 
+                        canvasWidth ={700} 
                         ref={canvasRef}
                         />
                         <br></br>
@@ -503,13 +511,14 @@ const Room: React.FC<RoomProps> = ({}) => {
                     <CanvasDraw 
                         style={{display: "block", margin:"auto", marginTop:5}} 
                         canvasHeight = {250} 
-                        canvasWidth ={900} 
+                        canvasWidth ={700} 
                         ref={canvasRefInc}
                         hideGrid={true}
                         disabled={true}
                     
                     />
                     <br/>
+                    </div>
                     <div className={`fullChatContainer ${ chatIsToggled ? "chatToggled" : ""}`}>
                     <div className="container">
                     <div className="messagingContainer">
