@@ -42,8 +42,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.emit("connected", roomID);
 
         socket.on("connectedResponse", (res) => {
-            console.log(res);
+            console.log("CONNECTED RES",res);
             setRoomData(res);
+            console.log("connectRes:res.dataList.queue", res.dataList.queue)
+            setQueue(res.dataList.queue);
         })
     
         socket.on("playClient", (data) => {
@@ -54,8 +56,21 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.on("pauseClient", (data) => {
             // console.log(data);
             setIsPlaying(false);
-          })
+        })
     
+        socket.on("updateQueueClient", (data) => {
+            console.log("data.queue", data.queue)
+            setQueue(data.queue);
+        })
+
+        socket.on("nextVideoClient", (data) => {
+            console.log("nextVideoClient");
+            setCurrentVideo(queue[0]);
+            let temps = queue;
+            temps.shift();
+            setQueue(temps);
+        })
+
         return () => {
           socket.emit("disconnected", "disconnected");
           socket.disconnect();
@@ -69,11 +84,13 @@ const Room: React.FC<RoomProps> = ({}) => {
     }, [setQueue, setCurrentVideo])
 
     function nextVideo() {
+        socket.emit("nextVideo", {
+            username: "test"
+        });
         setCurrentVideo(queue[0])
         let temps = queue;
         temps.shift();
         setQueue(temps);
-
     }
 
     const start = () => {
@@ -98,8 +115,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         // alert(sec);
     }
 
-
-
     const [data,setData] = useState(String);
     function getData(val:any) {
         
@@ -113,9 +128,15 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     function clicked() {
         if(data != "") {
-            if(ReactPlayer.canPlay(data)) {
-                setQueue((prev) => [...prev, data]);
-                console.log("queue",queue);
+            if (ReactPlayer.canPlay(data)) {
+                // setQueue((prev) => [...prev, data]);
+                // console.log("queue", queue);
+                let temp = queue;
+                temp.push(data);
+                socket.emit("updateQueue", {
+                    queue: temp,
+                    username: "test"
+                });
             } else {
                 alert("Cannot Play that. Please Try Another URL")
             }
@@ -128,7 +149,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         )
     }
 
-    const [colorBrush,setColorBrush] = useState(String);
+    const [colorBrush, setColorBrush] = useState(String);
 
     return (
         <div className="room">
@@ -153,13 +174,16 @@ const Room: React.FC<RoomProps> = ({}) => {
                 height={500}
                     />
 
-            <input type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
+            <input placeholder="Enter URL here..." type="text" size= {50} ref={inputRef} onChange={() => {getData(inputRef.current.value)}}  style={{   display: "block", margin:"auto"}}/>
             <br></br>
             <br></br>
             <button  style={{   display: "block", margin:"auto"}} onClick={ (e)=> {
-                clicked()
-                inputRef.current.value = ""
-                setData("")} }>Enter The URL And Click Me!</button>
+                if (inputRef.current.value.length > 0) {
+                    clicked()
+                    inputRef.current.value = ""
+                    setData("")
+                }
+                } }>Enter The URL And Click Me!</button>
             <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>Click to Skip</button>
             
             <div className="queueContainer">
@@ -167,12 +191,14 @@ const Room: React.FC<RoomProps> = ({}) => {
                 {queue.length > 0 ? (
                     <ul className="center">
                     {queue.map((number) =>
-                        <ListItem key={number.toString()}
+                        <ListItem key={number.toString() + Math.random()}
                         value={number} />
                     )}
                 </ul>
                 ) : (
-                    <ul className="center">Nothing here!</ul>
+                    <ul className="center">
+                        <li>Nothing here!</li>
+                    </ul>
                 )}
 
             </div>
