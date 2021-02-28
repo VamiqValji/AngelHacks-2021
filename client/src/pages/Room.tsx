@@ -31,10 +31,10 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
-    const [userUsername, setUserUsername] = useState<String>("")
+    const [userUsername, setUserUsername] = useState<string>("")
     const inputUsernameRef = useRef<HTMLInputElement>(null);
 
-    const chatArea = useRef<any>(null);
+    const chatArea = useRef<HTMLDivElement>(null);
     const inputChatArea = useRef<any>(null);
 
     const Modal = () => {
@@ -57,12 +57,42 @@ const Room: React.FC<RoomProps> = ({}) => {
         )
     }
 
-    const sendMsgOREventToServer = () => {
+    const MsgOrEventHandler = (message:string, msgOrEvent:"msg" | "event", username: string, who?:"you" | "other", event?:string) => {
 
-    }
+        const currentTime = new Date().toLocaleTimeString();
+        let span = document.createElement("div");
+        
+        let WHO;
+        if (who === "you") {
+            WHO = "(You)";
+        } else if (who === "other") {
+            WHO = "";
+        }
 
-    const addMsgOREventToDom = () => {
+        let USERNAME;
+        if (username !== undefined || username !== userUsername) {
+            USERNAME = username;
+        } else {
+            USERNAME = userUsername;
+        }
 
+        if (msgOrEvent === "msg") {
+            span.innerHTML = `<span key={${message + Math.random()}} id=${who}><div><li>${USERNAME}<li class="who">${WHO}</li></li><li class="currentTime">${currentTime}</li></div>${message}</span>`;
+        } else if (msgOrEvent === "event") {
+            span.innerHTML = `<span style={{fontSize:25}}><b>${USERNAME}</b> ${event}.</span>`;
+        }
+        // document.getElementsByClassName("messageArea")[0].appendChild(span);
+        chatArea.current?.append(span);
+        chatArea.current?.scrollBy(0,chatArea.current?.scrollHeight);
+        inputChatArea.current.value = "";
+
+        // const sendMsgOREventToServer = () => {
+
+        // }
+    
+        // const addMsgOREventToDom = () => {
+    
+        // }
     }
 
     const submitMessage = (e:React.FormEvent<HTMLFormElement>) => {
@@ -70,6 +100,10 @@ const Room: React.FC<RoomProps> = ({}) => {
         if (inputChatArea.current?.value.length <= 0) return;
         console.log(inputChatArea.current?.value);
         console.log(chatArea.current);
+        MsgOrEventHandler(inputChatArea.current.value, "msg", userUsername, "you", "joined");
+        MsgOrEventHandler("other test", "msg", userUsername, "other");
+        MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "joined");
+        MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "paused");
     }
 
     useEffect(() => {

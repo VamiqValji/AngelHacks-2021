@@ -285,8 +285,6 @@ button:hover {
   margin-left: 1rem;
   font-size: 0.8em;
   color: rgba(255, 255, 255, 0.4);
-}
-.currentTime {
   display: inline-flex;
   list-style-type: none;
   text-decoration: none;
@@ -328,4 +326,8 @@ form.messageBox {
 .messageBox button {
   border-radius: 0rem 1rem 1rem 0rem;
   padding: 1rem;
+}
+.who {
+  margin-left: 0.3rem;
+  color: rgba(255, 255, 255, 0.4);
 }
