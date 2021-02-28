@@ -184,10 +184,14 @@ button:hover {
   padding: 1rem;
   border: 0.2rem solid rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
-  width: 50rem;
+  width: 25rem;
   margin: 1rem auto;
   display: flex;
   flex-direction: column;
+}
+.queueContainer ul span {
+  height: 10rem;
+  overflow-y: auto;
 }
 .queueContainer ul li {
   margin: 0.3rem auto;
@@ -272,6 +276,38 @@ button:hover {
   justify-content: center;
 }
 
+.fullQueueContainer {
+  background: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  right: 0;
+  top: 0;
+  overflow: visible;
+  border-radius: 0rem 0rem 0rem 1rem;
+  padding: 1rem;
+  transition: 0.2s;
+  z-index: 1;
+}
+
+.fullQueueContainer .queueArrow {
+  position: fixed;
+  top: 0.3rem;
+  right: 27rem;
+  padding: 0.8rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  font-size: 1.5em;
+  transition: 0.2s;
+}
+.fullQueueContainer .queueArrow i {
+  margin-right: 1rem;
+}
+.fullQueueContainer.toggled .queueArrow {
+  right: 0rem;
+}
+.fullQueueContainer.toggled {
+  right: -28rem;
+}
+
 .drawingsContainer {
   background: rgba(0, 0, 0, 0.9);
   position: fixed;
@@ -288,7 +324,7 @@ button:hover {
 }
 .drawingsContainer .drawingsArrow {
   position: fixed;
-  top: 29rem;
+  top: 5rem;
   left: 46rem;
   padding: 1rem;
   border-radius: 1rem;
@@ -369,24 +405,29 @@ button:hover {
   margin-top: -1rem;
   margin-bottom: -2rem;
 }
-.messageArea::-webkit-scrollbar {
+.messageArea::-webkit-scrollbar,
+.queueContainer ul span::-webkit-scrollbar {
   width: 4px;
   transition: 0.1s;
 }
-.messageArea::-webkit-scrollbar {
+.messageArea::-webkit-scrollbar,
+.queueContainer ul span::-webkit-scrollbar {
   width: 10px;
 }
-.messageArea::-webkit-scrollbar-track {
+.messageArea::-webkit-scrollbar-track,
+.queueContainer ul span::-webkit-scrollbar {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 1rem;
   transition: 0.1s;
 }
-.messageArea::-webkit-scrollbar-thumb {
+.messageArea::-webkit-scrollbar-thumb,
+.queueContainer ul span::-webkit-scrollbar {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 1rem;
   transition: 0.1s;
 }
-.messageArea::-webkit-scrollbar-thumb:hover {
+.messageArea::-webkit-scrollbar-thumb:hover,
+.queueContainer ul span::-webkit-scrollbar {
   background: rgba(255, 255, 255, 0.3);
 }
 .messageArea span {

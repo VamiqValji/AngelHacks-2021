@@ -35,6 +35,7 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [chatIsToggled, setChatIsToggled] = useState<boolean>(true);
     const [drawingIsToggled, setDrawingIsToggled] = useState<boolean>(true);
+    const [queueIsToggled, setQueueIsToggled] = useState<boolean>(true);
 
     const [userUsername, setUserUsername] = useState<string>("")
     const inputUsernameRef = useRef<HTMLInputElement>(null);
@@ -408,8 +409,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         linkRef.current.setSelectionRange(0, 99999);
         document.execCommand("copy");
     }
-
-
     
     if (userUsername.length > 0) {
         return (
@@ -467,15 +466,26 @@ const Room: React.FC<RoomProps> = ({}) => {
                         } }>Enter The URL And Click Me!</button>
                     <button style={{display: "block", margin:"auto"}} onClick ={()=> {nextVideo()}}>Click to Skip</button>
                     
+                    <div className={`fullQueueContainer ${ queueIsToggled ? "toggled" : ""}`}>
                     <div className="queueContainer">
+
+                    <span className="queueArrow"
+                        onClick={(e) => 
+                        {
+                            e.preventDefault();
+                            setQueueIsToggled(!queueIsToggled);
+                        }}><i className={`${ queueIsToggled ? "fas fa-arrow-left" : "fas fa-arrow-right"}`}></i>Queue</span>
+
                         <br/>
-                        <h2 className="center">Queue:</h2>
+                        <h2 style={{margin:-20}} className="center">Queue:</h2>
                         {queue.length > 0 ? (
                             <ul className="center">
+                            <span>
                             {queue.map((number) =>
                                 <ListItem key={number.toString() + Math.random()}
                                 value={number} />
                             )}
+                            </span>
                         </ul>
                         ) : (
                             <ul className="center">
@@ -483,6 +493,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                             </ul>
                         )}
     
+                    </div>
                     </div>
                     <br/>
                     <div className={`drawingsContainer ${ drawingIsToggled ? "toggled" : ""}`}>
