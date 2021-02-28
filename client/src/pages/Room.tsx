@@ -2,11 +2,12 @@ import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import ReactPlayer from 'react-player/youtube'
 import CanvasDraw from "react-canvas-draw";
-import {
-    useParams,
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import io from "socket.io-client";
-import { SketchPicker } from 'react-color';
+import { HuePicker } from 'react-color';
+import { compress, decompress  } from 'lz-string'
+import { O_DIRECT } from 'constants';
+
 
 interface RoomProps {}
 
@@ -144,6 +145,11 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.on("changeTime", data => {
             videoRef.current.seekTo(data.currentTime, 'seconds')
         })
+
+        socket.on("changeCanvas", data => {
+            canvasRefInc.current.clear()
+            canvasRefInc.current.loadSaveData(decompress(data.info))
+        })
     
         socket.on("playClient", (data) => {
         //   console.log(data);
@@ -270,23 +276,21 @@ const Room: React.FC<RoomProps> = ({}) => {
         videoRef.current.muted=false;
     }
 
-    const time = (sec:any) => {
-        //alert(sec);
-    }
 
     const [data,setData] = useState(String);
     function getData(val:any) {
         
-        if(val != "") { 
+        if(val !== "") { 
              setData(val)
         }
         
     }
 
     var canvasRef = useRef<any>(null);
+    var canvasRefInc = useRef<any>(null);
 
     function clicked() {
-        if(data != "") {
+        if(data !== "") {
             if (ReactPlayer.canPlay(data)) {
                 // setQueue((prev) => [...prev, data]);
                 // console.log("queue", queue);
@@ -323,8 +327,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         }
     }
 
-    const [colorBrush,setColorBrush] = useState(String);
-    const [currentTime, setCurrentTime] = useState(Number)
     const linkRef = useRef<any>(null);
     //videoRef.current.seekTo(videoRef.current.getCurrentTime(), 'seconds')
 
@@ -338,14 +340,39 @@ const Room: React.FC<RoomProps> = ({}) => {
     //     }
         
     // }
+    const [brush, setBrush] = useState(String);
+    
+    const setColorBrush = (color) => {
+        console.log(color)
+        setBrush(color.hex);
+    }
 
     const copyToClipboard = () => {
         linkRef.current.select();
         linkRef.current.setSelectionRange(0, 99999);
         document.execCommand("copy");
     }
+
+    let oldData = " ";
+    let cmprsedData = "";
+    const [checkCanvas, setCheckCanvas] = useState(false);
+
+    const canvasChange = () => {
+            let saveData = canvasRef.current.getSaveData();
+            if(saveData != oldData) {
+                //console.log("saved", saveData, "and old", oldData)
+                oldData = saveData;
+                cmprsedData = compress(saveData)
+                socket.emit("canvas", {
+                    username: userUsername,
+                    info: cmprsedData
+                })
+            }
+    }
+
     
     if (userUsername.length > 0) {
+        
         return (
             <>
                 {/* <body> */}
@@ -353,8 +380,10 @@ const Room: React.FC<RoomProps> = ({}) => {
                 {roomData.success === true ? (
                     <div>
                         <h1>Room Name: {roomData.roomName}</h1>
-                        <SketchPicker />
-                    <h1 >Current Video: <a href={currentVideo}> </a> </h1>
+                        <input ref={linkRef} type="text" value={`${window.location.href}`} style={{width: 285}} />
+                        <button style={{marginTop:-20, fontSize:15}} className="left" onClick={copyToClipboard}>Copy Me!</button>
+                        <h1 className="center"><a href={currentVideo}>Current Video</a></h1>
+ 
                     {console.log(isPlaying)}
                     <div className="reactPlayerContainer">
                         {currentVideo ? (
@@ -412,10 +441,32 @@ const Room: React.FC<RoomProps> = ({}) => {
                         )}
     
                     </div>
-    
-                    <CanvasDraw style={{display: "block", margin:"auto"}} canvasHeight = {250} canvasWidth ={900} ref={canvasRef} brushColor ={colorBrush}/>
-                    {//}<button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.clear()}}>Clear</button>
-                    }
+                    <HuePicker color = {"#333"} onChangeComplete={(color)=>setColorBrush(color)} className="c"/>
+                    <button style={{display: "block", margin:"auto"}} onClick ={()=> {canvasRef.current.clear()}}>Clear</button>
+                    <br></br>
+                    <h2 className={"center"}>Draw Here To Your Friends!</h2>
+                    
+                    <CanvasDraw 
+                        brushColor = {brush} 
+                        style={{display: "block", margin:"auto"}} 
+                        canvasHeight = {250} 
+                        canvasWidth ={900} 
+                        ref={canvasRef}
+                        
+                        />
+                        <br></br>
+                        <button style={{display: "block", margin:"auto"}} onClick={()=>canvasChange()}>Upload!</button>
+                    
+                        <h2 className={"center"}>Here Is What You And Your Friends Drew!</h2>
+                    <CanvasDraw 
+                        style={{display: "block", margin:"auto"}} 
+                        canvasHeight = {250} 
+                        canvasWidth ={900} 
+                        ref={canvasRefInc}
+                        hideGrid={true}
+                        disabled={true}
+                    
+                    />
                     <div className="container">
                     <div className="messagingContainer">
                         <h2>
