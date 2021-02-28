@@ -64,6 +64,7 @@ io.on("connection", (socket) => {
     console.log("roomID", roomID);
 
     for (let i = 0; i < dataList.length; i++) {
+      console.log(`COMPARE: (${dataList[i].roomID})(${roomID})`);
       if (dataList[i].roomID === roomID) {
         // if room id is correct
         socket.join(roomID);
@@ -81,18 +82,19 @@ io.on("connection", (socket) => {
           username: "test",
         });
         inPrivRoom = true;
-      } else {
-        if (!inPrivRoom) {
-          socket.emit("connectedResponse", {
-            success: false,
-          });
-          inPrivRoom = false;
-        }
       }
+      // else {
+      //   if (!inPrivRoom) {
+      //     socket.emit("connectedResponse", {
+      //       success: false,
+      //     });
+      //     inPrivRoom = false;
+      //   }
+      // }
     }
   });
 
-  console.log(dataList);
+  // console.log(dataList);
 
   socket.on("play", (data) => {
     console.log("play");
@@ -102,10 +104,10 @@ io.on("connection", (socket) => {
     console.log("pause");
     socket.to(roomID).broadcast.emit("pauseClient", data);
   });
-  socket.on("time", (data =>{
+  socket.on("time", (data) => {
     console.log("changing time");
-    socket.to(roomID).broadcast.emit("changeTime", data)
-  }))
+    socket.to(roomID).broadcast.emit("changeTime", data);
+  });
   socket.on("updateQueue", (data) => {
     for (let i = 0; i < dataList.length; i++) {
       if (dataList[i].roomID === roomID) {

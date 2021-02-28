@@ -41,7 +41,6 @@ const Room: React.FC<RoomProps> = ({}) => {
             setRoomData(res);
             console.log("connectRes:res.dataList.queue", res.dataList.queue)
             setQueue(res.dataList.queue);
-            
         })
 
         
@@ -177,16 +176,16 @@ const Room: React.FC<RoomProps> = ({}) => {
     const [userUsername, setUserUsername] = useState<String>("")
     //videoRef.current.seekTo(videoRef.current.getCurrentTime(), 'seconds')
 
-    while(userUsername.length <= 0) {
-        let herllo = prompt("Please enter your name")
-        if(herllo != null) {
-            if(herllo.length > 0) {
-                setUserUsername(herllo)
-                break;
-            }
-        }
+    // while(userUsername.length <= 0) {
+    //     let herllo = prompt("Please enter your name")
+    //     if(herllo != null) {
+    //         if(herllo.length > 0) {
+    //             setUserUsername(herllo)
+    //             break;
+    //         }
+    //     }
         
-    }
+    // }
     
 
     return (
