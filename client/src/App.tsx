@@ -13,30 +13,30 @@ import CreateRoom from "./pages/CreateRoom";
 
 import io from "socket.io-client";
 
-let socket;
+// let socket;
 
 function App() {
 
   const [allUsersNumber, setAllUsersNumber] = useState(0);
 
-  const ENDPOINT = "http://localhost:3001";
+  // const ENDPOINT = "http://localhost:3001";
 
-  useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("connected", "connect");
-    // effect
+  // useEffect(() => {
+  //   socket = io(ENDPOINT);
+  //   socket.emit("connected", "connect");
+  //   // effect
 
-    socket.on("updatePublicPlayers", (allUsers) => {
-      console.log(allUsers);
-      setAllUsersNumber(allUsers);
-    })
+  //   socket.on("updatePublicPlayers", (allUsers) => {
+  //     console.log(allUsers);
+  //     setAllUsersNumber(allUsers);
+  //   })
 
-    return () => {
-      socket.emit("disconnected", "disconnected");
-      socket.disconnect();
-      socket.off();
-    }
-  }, [ENDPOINT])
+  //   return () => {
+  //     socket.emit("disconnected", "disconnected");
+  //     socket.disconnect();
+  //     socket.off();
+  //   }
+  // }, [ENDPOINT])
 
   return (
     <Router>

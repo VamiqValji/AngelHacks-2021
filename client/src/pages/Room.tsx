@@ -23,9 +23,13 @@ const Room: React.FC<RoomProps> = ({}) => {
 
     const [queue, setQueue] = useState<string[]>([]);
 
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
     useEffect(() => {
         socket = io(ENDPOINT);
+        // console.log("connected", roomID);
         socket.emit("connected", roomID);
+
         socket.on("connectedResponse", (res) => {
             console.log(res);
             setRoomData(res);
@@ -46,7 +50,7 @@ const Room: React.FC<RoomProps> = ({}) => {
           socket.disconnect();
           socket.off();
         }
-      }, [ENDPOINT])
+      }, [ENDPOINT, roomID, setRoomData, setIsPlaying])
 
     useEffect(() => {
         setQueue((prev) => [...prev,"https://www.youtube.com/watch?v=iv8rSLsi1xo&ab_channel=AnsonAlexander"]);
@@ -78,9 +82,6 @@ const Room: React.FC<RoomProps> = ({}) => {
     function nextVideo() {
         setVideo(prevVideo => prevVideo = newVideo)
     }
-
-    // var isPlaying = false;
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
     return (
         <>

@@ -28,11 +28,18 @@ let allUsers = 0;
 
 let dataList = []; // users and rooms
 
-dataList.push({
-  roomName: "test",
-  roomID: "test",
-  users: [],
-});
+dataList.push(
+  {
+    roomName: "test",
+    roomID: "test",
+    users: [],
+  },
+  {
+    roomName: "test2",
+    roomID: "test2",
+    users: [],
+  }
+);
 
 const joinRoom = (roomName = String, socket) => {
   console.log(roomName);
@@ -42,14 +49,14 @@ const publicRoom = "PublicRoom";
 io.on("connection", (socket) => {
   if (socket.handshake.headers.referer.includes(`${process.env.ORIGIN}/room`)) {
     // private room
-    let room = "";
+    let inPrivRoom = false;
+    let roomID;
     socket.on("connected", (data) => {
       console.log("priv");
       // socket.join("priv");
+      roomID = data;
 
-      let inPrivRoom = false;
-
-      let roomID = data;
+      console.log("roomIDBEFORE", data);
       console.log("roomID", roomID);
 
       for (let i = 0; i < dataList.length; i++) {
@@ -62,29 +69,33 @@ io.on("connection", (socket) => {
             roomID: roomID,
             roomName: dataList[i].roomName,
           });
+          dataList[i].users.push(socket.id);
           inPrivRoom = true;
         } else {
-          socket.emit("connectedResponse", {
-            success: false,
-          });
+          if (!inPrivRoom) {
+            socket.emit("connectedResponse", {
+              success: false,
+            });
+            inPrivRoom = false;
+          }
         }
       }
-
-      if (inPrivRoom) {
-        socket.on("play", (data) => {
-          console.log("play");
-          socket.to(roomID).broadcast.emit("playClient", data);
-        });
-        socket.on("pause", (data) => {
-          console.log("pause");
-          socket.to(roomID).broadcast.emit("pauseClient", data);
-        });
-      }
-
-      allUsers++;
-      console.log(data);
-      // socket.broadcast.emit("updatePublicPlayers", allUsers);
     });
+
+    console.log(dataList);
+
+    socket.on("play", (data) => {
+      console.log("play");
+      socket.to(roomID).broadcast.emit("playClient", data);
+    });
+    socket.on("pause", (data) => {
+      console.log("pause");
+      socket.to(roomID).broadcast.emit("pauseClient", data);
+    });
+
+    allUsers++;
+    // console.log(data);
+    // socket.broadcast.emit("updatePublicPlayers", allUsers);
     socket.on("disconnected", (data) => {
       allUsers--;
       console.log(data);

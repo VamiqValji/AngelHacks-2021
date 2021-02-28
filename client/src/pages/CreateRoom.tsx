@@ -1,5 +1,6 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import axios from "axios";
+import { BooleanLiteral } from 'typescript';
 
 interface CreateRoomProps {
     // socket: CreateRoomProps
@@ -9,6 +10,9 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
 
     const roomName = useRef<HTMLInputElement>(null);
     const inputName = useRef<HTMLInputElement>(null);
+    const linkRef = useRef<any>(null);
+    const [gotSuccessRes, setGotSuccessRes] = useState<boolean>(false);
+    const [roomID, setRoomID] = useState<string>("");
 
     
     const joinRoom = async (e:React.FormEvent<HTMLFormElement>) => {
@@ -21,7 +25,10 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                 roomName: roomName.current?.value
             });
             console.log("res data: ", resp.data);
+            setGotSuccessRes(true);
+            setRoomID(resp.data.roomID);
         } catch (err) {
+            setGotSuccessRes(false);
             console.error(err);
         }
 
@@ -35,8 +42,12 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
         // .catch((err) => {
         //     console.warn(err);
         // });
+    }
 
-        console.log();
+    const copyToClipboard = () => {
+        linkRef.current.select();
+        linkRef.current.setSelectionRange(0, 99999);
+        document.execCommand("copy");
     }
 
     return (
@@ -53,6 +64,17 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                         <br/>
                         <button className="center">Create</button>
                     </form>
+                    { gotSuccessRes ? ( // roomID.length > 3
+                        <>
+                            <div>Give this link to your friends!</div>
+                            <br/>
+                            <input ref={linkRef} type="text" value={`${window.location.href.replace("/create", "/room/")}${roomID}`} placeholder="Link To Room" />
+                            <br/>
+                            <button onClick={copyToClipboard}>Copy Me!</button>
+                        </>
+                    ) : (
+                        <></>
+                    )}
                 </div>
             </div>
         </>
