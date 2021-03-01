@@ -17,7 +17,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     
     const inputRef = useRef<any>(null);
 
-    const ENDPOINT = "https://watchsocket.herokuapp.com";
+    const ENDPOINT = "https://watchsocket.herokuapp.com/socket";
 
     let roomID:any = useParams();
     console.log(roomID);
