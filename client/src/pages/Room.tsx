@@ -17,7 +17,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     
     const inputRef = useRef<any>(null);
 
-    const ENDPOINT = "/";
+    const ENDPOINT = "";
 
     let roomID:any = useParams();
     console.log(roomID);
