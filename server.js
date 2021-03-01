@@ -40,22 +40,22 @@ let allUsers = 0;
 let dataList = []; // users and rooms
 let currentUsers = [];
 
-dataList.push(
-  {
-    roomName: "test",
-    roomID: "test",
-    users: [],
-    queue: [],
-    duration: "",
-  },
-  {
-    roomName: "test2",
-    roomID: "test2",
-    users: [],
-    queue: [],
-    duration: "",
-  }
-);
+// dataList.push(
+//   {
+//     roomName: "test",
+//     roomID: "test",
+//     users: [],
+//     queue: [],
+//     duration: "",
+//   },
+//   {
+//     roomName: "test2",
+//     roomID: "test2",
+//     users: [],
+//     queue: [],
+//     duration: "",
+//   }
+// );
 
 // const joinRoom = (roomName = String, socket) => {
 //   console.log(roomName);
@@ -277,15 +277,15 @@ io.on("connection", (socket) => {
   } */
 });
 
-app.get("/", (req, res) => {
+app.get("/s/", (req, res) => {
   res.send("<h1>Hello World</h1>");
 });
 
-app.get("/testing", (req, res) => {
-  res.send("<h1>testing</h1>");
-});
+// app.get("/testing", (req, res) => {
+//   res.send("<h1>test</h1>");
+// });
 
-app.post("/create", (req, res) => {
+app.post("/s/create", (req, res) => {
   console.log("create");
   // res.send("<h1>Create</h1>");
   let random = Math.random().toString(36).substring(7);
@@ -312,7 +312,7 @@ app.post("/create", (req, res) => {
     .json({ message: "Created Room.", roomID: random, redirect: true });
 });
 
-app.post("/join", (req, res) => {
+app.post("/s/join", (req, res) => {
   // res.send("<h1>Join</h1>");
   console.log("joining");
   for (let i = 0; i < dataList.length; i++) {
@@ -335,6 +335,6 @@ app.post("/join", (req, res) => {
     .json({ message: "Room not found." /*, roomID: random, redirect: true*/ });
 });
 
-server.listen(process.env.PORT, () => {
-  console.log("listening on port " + process.env.PORT);
+server.listen(process.env.PORT || 3001, () => {
+  console.log("listening on port " + process.env.PORT || 3001);
 });

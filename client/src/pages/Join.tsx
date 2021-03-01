@@ -43,7 +43,7 @@ const Join: React.FC<JoinProps> = ({}) => {
         e.preventDefault();
 
         try {
-            const resp = await axios.post('http://localhost:3001/join', 
+            const resp = await axios.post("https://watchsocket.herokuapp.com/s/join", 
             {
                 name: inputName.current?.value,
                 roomName: roomName.current?.value
@@ -62,7 +62,7 @@ const Join: React.FC<JoinProps> = ({}) => {
         const getResponse = async (roomID:string) => {
             if (roomID.length > 3) {
                 try {
-                    const resp = await axios.post('http://localhost:3001/join', 
+                    const resp = await axios.post("https://watchsocket.herokuapp.com/s/join", 
                     {
                         name: inputName.current?.value,
                         roomName: roomName.current?.value,

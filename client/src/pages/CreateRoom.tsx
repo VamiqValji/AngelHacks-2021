@@ -20,7 +20,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
         e.preventDefault();
 
         try {
-            const resp = await axios.post('http://localhost:3001/create', 
+            const resp = await axios.post("https://watchsocket.herokuapp.com/s/create", 
             {
                 name: inputName.current?.value,
                 roomName: roomName.current?.value
