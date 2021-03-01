@@ -40,22 +40,22 @@ let allUsers = 0;
 let dataList = []; // users and rooms
 let currentUsers = [];
 
-// dataList.push(
-//   {
-//     roomName: "test",
-//     roomID: "test",
-//     users: [],
-//     queue: [],
-//     duration: "",
-//   },
-//   {
-//     roomName: "test2",
-//     roomID: "test2",
-//     users: [],
-//     queue: [],
-//     duration: "",
-//   }
-// );
+dataList.push(
+  {
+    roomName: "test",
+    roomID: "test",
+    users: [],
+    queue: [],
+    duration: "",
+  },
+  {
+    roomName: "test2",
+    roomID: "test2",
+    users: [],
+    queue: [],
+    duration: "",
+  }
+);
 
 // const joinRoom = (roomName = String, socket) => {
 //   console.log(roomName);
@@ -279,6 +279,10 @@ io.on("connection", (socket) => {
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World</h1>");
+});
+
+app.get("/testing", (req, res) => {
+  res.send("<h1>testing</h1>");
 });
 
 app.post("/create", (req, res) => {
