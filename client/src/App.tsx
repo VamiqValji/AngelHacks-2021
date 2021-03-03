@@ -11,7 +11,9 @@ import Join from "./pages/Join";
 import Room from "./pages/Room";
 import CreateRoom from "./pages/CreateRoom";
 
-import io from "socket.io-client";
+import NotFound from "./pages/NotFound";
+
+// import io from "socket.io-client";
 
 // let socket;
 
@@ -76,6 +78,7 @@ function App() {
           {/* <Route path="/join/:roomID">
             <Join />
           </Route> */}
+          <Route component={NotFound} />
         </Switch>
       </div>
     </Router>

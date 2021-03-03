@@ -277,9 +277,9 @@ io.on("connection", (socket) => {
   } */
 });
 
-app.get("/s/", (req, res) => {
-  res.send("<h1>Hello World</h1>");
-});
+// app.get("/s/", (req, res) => {
+//   res.send("<h1>Hello World</h1>");
+// });
 
 // app.get("/testing", (req, res) => {
 //   res.send("<h1>test</h1>");
