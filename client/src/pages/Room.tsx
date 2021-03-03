@@ -108,21 +108,8 @@ const Room: React.FC<RoomProps> = ({}) => {
         if (who === "you") {
             inputChatArea.current.value = "";
         }
-        // for (let i = 0; i < chatArea.current?.children.length; i++) {
-        //     if (chatArea.current?.children[i].value === `${USERNAME} ${event}.`) {
-        //         return;
-        //     }
-        // }
         chatArea.current?.append(span);
         chatArea.current?.scrollBy(0,chatArea.current?.scrollHeight);
-
-        // const sendMsgOREventToServer = () => {
-
-        // }
-    
-        // const addMsgOREventToDom = () => {
-    
-        // }
     }
 
     const submitMessage = (e:React.FormEvent<HTMLFormElement>) => {
@@ -140,8 +127,6 @@ const Room: React.FC<RoomProps> = ({}) => {
     //     username: userUsername,
     //     event: "event",
     // });
-
-    
 
     useEffect(() => {
         socket = io(ENDPOINT);
@@ -310,8 +295,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         //     username: userUsername,
         //     event: "started the video"
         // });
-        // isPlaying = true;
-        // alert(isPlaying)
     }
     
     const pause = () => {
@@ -329,8 +312,6 @@ const Room: React.FC<RoomProps> = ({}) => {
         //     username: userUsername,
         //     event: "paused the video"
         // });
-        // isPlaying = false;
-        // alert(isPlaying)
     }
 
     const videoRef = useRef<any>(null);
@@ -394,17 +375,6 @@ const Room: React.FC<RoomProps> = ({}) => {
     const linkRef = useRef<any>(null);
     //videoRef.current.seekTo(videoRef.current.getCurrentTime(), 'seconds')
 
-    // while(userUsername.length <= 0) {
-    //     let herllo = prompt("Please enter your name")
-    //     if(herllo != null) {
-    //         if(herllo.length > 0) {
-    //             setUserUsername(herllo)
-    //             break;
-    //         }
-    //     }
-        
-    // }
-
     const copyToClipboard = () => {
         linkRef.current.select();
         linkRef.current.setSelectionRange(0, 99999);
@@ -414,7 +384,6 @@ const Room: React.FC<RoomProps> = ({}) => {
     if (userUsername.length > 0) {
         return (
             <>
-                {/* <body> */}
                 <div className="room">
                 {roomData.success === true ? (
                     <div>

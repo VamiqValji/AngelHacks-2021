@@ -35,17 +35,6 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
             setGotFailedRes(true);
             console.error(err);
         }
-
-        // axios
-        // .post("http://localhost:3001/create", {
-        //     roomName: roomName.current?.value,
-        // })
-        // .then((res) => {
-        //     console.log("res data: ", res.data);
-        // })
-        // .catch((err) => {
-        //     console.warn(err);
-        // });
     }
 
     const copyToClipboard = () => {
@@ -73,11 +62,6 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                         <input className="center" onChange={checkMax} ref={roomName} type="text" placeholder="Enter room name..." required />
                         </span>
                         <br/>
-                        {/* <h3 style={{margin:10, marginTop:-10}} className="center">Username</h3>
-                        <span className="center" >
-                        <input className="center" ref={inputName} type="text" placeholder="Enter your name..." />
-                        </span>
-                        <br/> */}
                         <button style={{marginTop:-10}} className="center">Create</button>
                     </form>
                     { gotSuccessRes ? ( // roomID.length > 3
