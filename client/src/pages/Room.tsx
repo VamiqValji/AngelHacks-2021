@@ -21,7 +21,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     const ENDPOINT = "";
 
     let roomID:any = useParams();
-    console.log(roomID);
+    // console.log(roomID);
     roomID = roomID.roomID;
 
     const [brush, setBrush] = useState(String);
@@ -53,7 +53,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     const Modal = () => {
         
         const submitUsername = (username:any) => {
-            console.log(username);
+            // console.log(username);
             setUserUsername(username);
         }
 
@@ -115,8 +115,8 @@ const Room: React.FC<RoomProps> = ({}) => {
     const submitMessage = (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (inputChatArea.current?.value.length <= 0) return;
-        console.log(inputChatArea.current?.value);
-        console.log(chatArea.current);
+        // console.log(inputChatArea.current?.value);
+        // console.log(chatArea.current);
         MsgOrEventHandler(inputChatArea.current.value, "msg", userUsername, "you");
         // MsgOrEventHandler("other test", "msg", userUsername, "other");
         // MsgOrEventHandler(inputChatArea.current.value, "event", userUsername, "other", "joined");
@@ -148,9 +148,9 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.emit("getUsers", (data) => {})
 
         socket.on("connectedResponse", (res) => {
-            console.log("CONNECTED RES",res);
+            // console.log("CONNECTED RES",res);
             setRoomData(res);
-            console.log("connectRes:res.dataList.queue", res.dataList.queue)
+            // console.log("connectRes:res.dataList.queue", res.dataList.queue)
             setQueue(res.dataList.queue);
             setDuration(res.duration);
         })
@@ -172,7 +172,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         })
     
         socket.on("updateQueueClient", (data) => {
-            console.log("data.queue", data.queue)
+            // console.log("data.queue", data.queue)
             setQueue(data.queue);
         })
 
@@ -189,12 +189,12 @@ const Room: React.FC<RoomProps> = ({}) => {
         })
 
         socket.on("userDisconnected", (data) => {
-            console.log("userDisconnected", data);
+            // console.log("userDisconnected", data);
             MsgOrEventHandler("", "event", data.username, "other", "left");
         })
 
         socket.on("userJoined", (data) => {
-            console.log("userJoined", data);
+            // console.log("userJoined", data);
             MsgOrEventHandler("", "event", data.username, "other", "joined");
         })
 
@@ -246,7 +246,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     }
 
     const setColorBrush = (color) => {
-        console.log(color)
+        // console.log(color);
         setBrush(color.hex);
     }
 
@@ -363,7 +363,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         )
     }
     function handleSeeking(seconds) {
-        console.log(seekTime)                       //9                    //15
+        // console.log(seekTime)                       //9                    //15
         if(seconds.playedSeconds - seekTime > 2 || seconds.playedSeconds - seekTime < -2) {
             handleTime()
             setSeekTime(seconds.playedSeconds);
@@ -395,7 +395,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                             </span>
                         </span>
                         <h1 style={{marginTop:16}} className="center"><a href={currentVideo}>Current Video</a></h1>
-                    {console.log(isPlaying)}
+                    {/* {console.log(isPlaying)} */}
                     <div className="reactPlayerContainer">
                         {currentVideo ? (
                         <ReactPlayer 

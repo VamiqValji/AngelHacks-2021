@@ -26,7 +26,7 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                 name: inputName.current?.value,
                 roomName: roomName.current?.value
             });
-            console.log("res data: ", resp.data);
+            // console.log("res data: ", resp.data);
             setGotSuccessRes(true);
             setGotFailedRes(false);
             setRoomID(resp.data.roomID);

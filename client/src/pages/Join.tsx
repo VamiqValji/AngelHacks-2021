@@ -32,7 +32,7 @@ const Join: React.FC<JoinProps> = ({}) => {
                 roomName: roomName.current?.value
             });
             setRoomJoined(true);
-            console.log("res data: ", resp.data);
+            // console.log("res data: ", resp.data);
         } catch (err) {
             console.error(err);
         }
@@ -52,7 +52,7 @@ const Join: React.FC<JoinProps> = ({}) => {
                         roomID: roomID
                     });
                     setRoomJoined(true);
-                    console.log("res data: ", resp.data);
+                    // console.log("res data: ", resp.data);
                 } catch (err) {
                     console.error(err);
                 }
