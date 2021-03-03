@@ -26,8 +26,30 @@ a:hover {
   color: var(--red);
 }
 
-.room {
-  
+/* .homeContainer {
+  display: flex;
+  justify-content: center;
+} */
+.watchContainer {
+  margin: 0.4rem;
+  margin-top: 1rem;
+  font-size: 3em;
+}
+.watch {
+  color: var(--red);
+}
+.homeContainer h3 {
+  font-size: 1.5em;
+}
+.homeContainer button {
+  margin-top: 1.5rem;
+  font-size: 2em;
+  border-radius: 1.7rem;
+  font-weight: 600;
+  padding: 1rem;
+}
+.homeContainer img {
+  filter: drop-shadow(0rem 0rem 0.1rem black);
 }
 
 /* MY CLASS SHORTCUTS*/
@@ -36,6 +58,7 @@ a:hover {
   display: flex;
   justify-content: center;
 }
+
 .c {
   margin: 0 auto;
 }
@@ -43,6 +66,15 @@ h1,
 h2,
 h3 {
   color: white;
+}
+.whiteSmoke {
+  color: var(--whiteSmoke);
+}
+.white {
+  color: white;
+}
+.light {
+  font-weight: 500;
 }
 
 /* MY CLASS SHORTCUTS*/
@@ -58,12 +90,22 @@ h3 {
   display: flex;
   justify-content: center;
   color: white;
+  max-height: 7rem;
+}
+.githubLogo {
+  margin-left: -2.7rem;
+  font-size: 1.5em;
+  color: white;
+  transition: 0.2s;
+}
+.githubLogo:hover {
+  color: var(--red);
 }
 
 .nav nav ul li {
   font-size: 2em;
   margin: 1rem;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 /* NAV BAR END */
@@ -113,6 +155,28 @@ button:hover {
   background: var(--red);
 }
 
+.joinCreateContainer {
+  margin-top: 0.3rem;
+  display: flex;
+  justify-content: center;
+}
+.joinCreate h2 {
+  font-size: 2em;
+}
+.joinCreate h3 {
+  font-size: 1.6em;
+}
+.joinCreate input {
+  font-size: 1.2em;
+  padding: 1rem;
+  border-radius: 2rem;
+}
+.joinCreate button {
+  font-size: 1.2em;
+  padding: 1rem;
+  border-radius: 2rem;
+}
+
 .queueContainer h2 {
   margin-top: 1rem;
 }
@@ -120,10 +184,14 @@ button:hover {
   padding: 1rem;
   border: 0.2rem solid rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
-  width: 50rem;
+  width: 25rem;
   margin: 1rem auto;
   display: flex;
   flex-direction: column;
+}
+.queueContainer ul span {
+  height: 10rem;
+  overflow-y: auto;
 }
 .queueContainer ul li {
   margin: 0.3rem auto;
@@ -206,4 +274,283 @@ button:hover {
 .reactPlayerContainer h2 {
   display: flex;
   justify-content: center;
+}
+
+.fullQueueContainer {
+  background: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  right: 0;
+  top: 0;
+  overflow: visible;
+  border-radius: 0rem 0rem 0rem 1rem;
+  padding: 1rem;
+  transition: 0.2s;
+  z-index: 1;
+}
+
+.fullQueueContainer .queueArrow {
+  position: fixed;
+  top: 0.3rem;
+  right: 27rem;
+  padding: 0.8rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  font-size: 1.5em;
+  transition: 0.2s;
+}
+.fullQueueContainer .queueArrow i {
+  margin-right: 1rem;
+}
+.fullQueueContainer.toggled .queueArrow {
+  right: 0rem;
+}
+.fullQueueContainer.toggled {
+  right: -28rem;
+}
+
+.drawingsContainer {
+  background: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  border-radius: 0rem 0rem 1rem 0rem;
+  padding: 1rem;
+  transition: 0.2s;
+}
+.drawingsContainer button {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.25);
+}
+.drawingsContainer .drawingsArrow {
+  position: fixed;
+  top: 5rem;
+  left: 46rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  font-size: 1.5em;
+  transition: 0.2s;
+}
+.drawingsContainer .drawingsArrow i {
+  margin-left: 1rem;
+}
+.drawingsContainer.toggled .drawingsArrow {
+  margin-left: -46rem;
+}
+.drawingsContainer.toggled {
+  margin-left: -47rem;
+}
+
+.fullChatContainer {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 1rem 0rem 0rem 0rem;
+  width: 32rem;
+  height: 45rem;
+  transition: 0.2s;
+}
+.messagingContainer {
+  margin-top: 2rem;
+}
+.messagingContainer h2 {
+  margin-top: -2rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+.messagingContainer h2 div {
+  position: absolute;
+  align-self: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 300;
+  margin-left: 10rem;
+  font-size: 0.6em;
+}
+.messageArea {
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 1rem 0.2rem 0.2rem 1rem;
+  height: 35rem;
+  width: 30rem;
+  margin: 1rem;
+  padding: 1rem;
+  overflow: auto;
+}
+.chatArrow {
+  position: fixed;
+  bottom: 40.5rem;
+  right: 28rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.3);
+  font-size: 1.5em;
+  transition: 0.2s;
+}
+.fullChatContainer.chatToggled {
+  margin-bottom: -40rem;
+}
+.fullChatContainer.chatToggled .chatArrow {
+  margin-bottom: -40rem;
+}
+.messageAreaContainer {
+  /* background: black; */
+  /* width: 30rem;
+  display: block;
+  margin: 0 auto; */
+  display: flex;
+  justify-content: center;
+  margin-top: -1rem;
+  margin-bottom: -2rem;
+}
+.messageArea::-webkit-scrollbar,
+.queueContainer ul span::-webkit-scrollbar {
+  width: 4px;
+  transition: 0.1s;
+}
+.messageArea::-webkit-scrollbar,
+.queueContainer ul span::-webkit-scrollbar {
+  width: 10px;
+}
+.messageArea::-webkit-scrollbar-track,
+.queueContainer ul span::-webkit-scrollbar {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 1rem;
+  transition: 0.1s;
+}
+.messageArea::-webkit-scrollbar-thumb,
+.queueContainer ul span::-webkit-scrollbar {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 1rem;
+  transition: 0.1s;
+}
+.messageArea::-webkit-scrollbar-thumb:hover,
+.queueContainer ul span::-webkit-scrollbar {
+  background: rgba(255, 255, 255, 0.3);
+}
+.messageArea span {
+  overflow: hidden;
+  margin: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  display: block;
+  word-wrap: break-word;
+  min-height: 1rem;
+}
+.messageArea span#you {
+  color: white;
+}
+.messageArea span#you div {
+  color: rgba(255, 255, 255, 0.75);
+}
+.messageArea span#you li,
+.messageArea span#other li {
+  display: inline-flex;
+}
+.messageArea span#you li:last-child,
+.messageArea span#other li:last-child,
+.currentTime {
+  margin-left: 1rem;
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.4);
+  display: inline-flex;
+  list-style-type: none;
+  text-decoration: none;
+}
+.messageArea span#other div {
+  color: rgba(255, 255, 255, 0.6);
+}
+.messageArea span#other {
+  color: rgba(255, 255, 255, 0.85);
+}
+.messageBoxContainer {
+  display: flex;
+  justify-content: center;
+}
+.messageBox {
+  display: flex;
+  justify-content: center;
+  width: 25rem;
+}
+form.messageBox {
+  margin-top: 0.2rem;
+}
+.messageBox span {
+  /* background: rgba(0, 0, 0, 0.5); */
+  margin: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+.messageBox input {
+  min-height: auto;
+  margin-top: -5rem;
+  background: none;
+}
+.messageBox *,
+.messageBox input {
+  /* background: rgba(255, 255, 255, 0.1); */
+
+  font-size: 1em;
+  margin-right: 0.1rem;
+  border-radius: 0rem;
+  transition: 0.2s;
+}
+.messageBox button {
+  border-radius: 0rem 1rem 1rem 0rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  transition: 0.2s;
+}
+.messageBox button:hover {
+  color: white;
+  background: var(--red);
+}
+
+.who {
+  margin-left: 0.3rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 0.2rem;
+  border: 0.1rem solid black;
+  width: 5rem;
+  border-radius: 1rem;
+  background: rgba(255, 0, 0, 0.4);
+}
+
+.sticky {
+  position: sticky;
+}
+.copyMe {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding: 0.6rem;
+  border-radius: 0rem 0.5rem 0rem 0rem;
+  background: rgba(0, 0, 0, 0.4);
+}
+.copyMe h1 {
+  display: flex;
+  justify-content: center;
+}
+
+.notFound {
+  margin-top: 0.7rem;
+}
+.notFound h1 {
+  color: var(--red);
+}
+.notFound button {
+  margin-top: 1.5rem;
+  font-size: 2em;
+  border-radius: 1.7rem;
+  font-weight: 600;
+  padding: 1rem;
 }

@@ -8,10 +8,11 @@ interface CreateRoomProps {
 
 const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
 
-    const roomName = useRef<HTMLInputElement>(null);
+    const roomName = useRef<any>();
     const inputName = useRef<HTMLInputElement>(null);
     const linkRef = useRef<any>(null);
     const [gotSuccessRes, setGotSuccessRes] = useState<boolean>(false);
+    const [gotFailedRes, setGotFailedRes] = useState<boolean>(false);
     const [roomID, setRoomID] = useState<string>("");
 
     
@@ -19,16 +20,19 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
         e.preventDefault();
 
         try {
-            const resp = await axios.post('http://localhost:3001/create', 
+            // http://localhost:3001 locally
+            const resp = await axios.post("https://watchsocket.herokuapp.com/s/create", 
             {
                 name: inputName.current?.value,
                 roomName: roomName.current?.value
             });
             console.log("res data: ", resp.data);
             setGotSuccessRes(true);
+            setGotFailedRes(false);
             setRoomID(resp.data.roomID);
         } catch (err) {
             setGotSuccessRes(false);
+            setGotFailedRes(true);
             console.error(err);
         }
 
@@ -50,16 +54,23 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
         document.execCommand("copy");
     }
 
+    const checkMax = () => {
+        if (roomName.current?.value >= 10) {
+            roomName.current.value = roomName.current?.value.slice(0, 10);
+        }
+    }
+
     return (
         <>
             <div className="containerContainer">
                 <div className="container">
+                <div className="joinCreateContainer">
                     <div className="joinCreate">
                     <h2>Create Room</h2>
                     <form onSubmit={(e) => joinRoom(e)} >
                         <h3 style={{margin:10}} className="center">Room Name</h3>
                         <span className="center" >
-                        <input className="center" ref={roomName} type="text" placeholder="Enter room name..." required />
+                        <input className="center" onChange={checkMax} ref={roomName} type="text" placeholder="Enter room name..." required />
                         </span>
                         <br/>
                         {/* <h3 style={{margin:10, marginTop:-10}} className="center">Username</h3>
@@ -82,9 +93,12 @@ const CreateRoom: React.FC<CreateRoomProps> = ({}) => {
                             <Link to={`/room/${roomID}`}><button style={{marginTop:-15, fontSize:20}} className="center">Take me there!</button></Link>
                         </>
                     ) : (
-                        <></>
+                        <>
+                            {gotFailedRes && <span className="c error">Error</span> }
+                        </>
                     )}
                     </div>
+                </div>
                 </div>
             </div>
         </>

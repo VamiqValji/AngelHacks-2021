@@ -11,7 +11,9 @@ import Join from "./pages/Join";
 import Room from "./pages/Room";
 import CreateRoom from "./pages/CreateRoom";
 
-import io from "socket.io-client";
+import NotFound from "./pages/NotFound";
+
+// import io from "socket.io-client";
 
 // let socket;
 
@@ -54,7 +56,10 @@ function App() {
               <Link to="/create">Create</Link>
             </li>
              <li>
-              <Link to="/room/">Room</Link>
+              {/* <Link to="/room/">Room</Link> */}
+            </li>
+            <li>
+              <a href="https://github.com/VamiqValji/AngelHacks-2021"><i className="fab fa-github githubLogo"></i> </a>
             </li>
             {allUsersNumber ? <div className="usersOnline">People Online: {allUsersNumber}</div> : ""}
           </ul>
@@ -70,9 +75,10 @@ function App() {
           <Route path="/room/:roomID">
             <Room />
           </Route>
-          <Route path="/join/:roomID">
+          {/* <Route path="/join/:roomID">
             <Join />
-          </Route>
+          </Route> */}
+          <Route component={NotFound} />
         </Switch>
       </div>
     </Router>
