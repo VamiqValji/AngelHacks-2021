@@ -8,6 +8,7 @@ import {
 import io from "socket.io-client";
 import { HuePicker } from 'react-color';
 import { compress, decompress  } from 'lz-string'
+import { Link } from "react-router-dom";
 
 interface RoomProps {}
 
@@ -174,6 +175,7 @@ const Room: React.FC<RoomProps> = ({}) => {
         socket.on("updateQueueClient", (data) => {
             // console.log("data.queue", data.queue)
             setQueue(data.queue);
+            // setCount(0);
         })
 
         socket.on("receiveMessage", (data) => {
@@ -238,6 +240,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                 username: userUsername,
                 queue: temps
             });
+            // setCount(0);
             // socket.emit("sendEvent", {
             //     username: userUsername,
             //     event: "skipped"
@@ -379,6 +382,17 @@ const Room: React.FC<RoomProps> = ({}) => {
         linkRef.current.select();
         linkRef.current.setSelectionRange(0, 99999);
         document.execCommand("copy");
+    }
+
+    const InvalidRoom = () => {
+        return (
+            <div className="containerContainer">
+                <div className="notFound">
+                    <h1 style={{fontSize:55}} className="center">Room Not Found</h1>
+                    <Link to="/create"><button className="center">Create A Room</button></Link>
+                </div>
+            </div>
+        )
     }
     
     if (userUsername.length > 0) {
@@ -543,9 +557,7 @@ const Room: React.FC<RoomProps> = ({}) => {
                     </div>
                     
                 ) : (
-                    <div className="center">
-                    <h2>Invalid Room</h2>
-                    </div>
+                    <InvalidRoom />
                 ) } 
                 </div>
                 </> 
@@ -553,9 +565,7 @@ const Room: React.FC<RoomProps> = ({}) => {
     } else {
         return (
             <>{roomData.success === true ? (<Modal />) : (
-            <div style={{marginTop:20}}className="center">
-            <h2>Invalid Room</h2>
-            </div>
+                <InvalidRoom />
             )}
         </>
         )
